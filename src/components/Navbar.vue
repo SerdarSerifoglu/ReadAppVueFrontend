@@ -1,0 +1,78 @@
+<style></style>
+
+<script>
+export default {
+  name: "Navbar",
+  data() {
+    return {
+      overlayClassName: "overlay"
+    };
+  },
+  methods: {
+    overlayActive: function() {
+      this.overlayClassName = "overlay overlay--active";
+    },
+    overlayClose: function() {
+      this.overlayClassName = "overlay";
+    }
+  }
+};
+</script>
+<template>
+  <div id="nav">
+    <header>
+      <a class="logo" href="/"><img src="images/logo.svg" alt="logo"/></a>
+      <nav>
+        <div class="nav__links">
+          <div class="nav-item" v-if="this.$store.state.token == ''">
+            <router-link class="nav-item" to="/register">Register</router-link>
+          </div>
+          <div class="nav-item" v-if="this.$store.state.token == ''">
+            <router-link class="nav-item" to="/login">Login</router-link>
+          </div>
+          <div class="nav-item" v-if="this.$store.state.token != ''">
+            <router-link class="nav-item" to="/treng/edit">TrEng</router-link>
+          </div>
+          <div class="nav-item" v-if="this.$store.state.token != ''">
+            <router-link class="nav-item" to="/reader">Reader</router-link>
+          </div>
+        </div>
+      </nav>
+      <a class="cta" href="#">Contact</a>
+      <p class="menu cta" @click="overlayActive">Menu</p>
+    </header>
+    <div :class="overlayClassName">
+      <a class="close" @click="overlayClose">&times;</a>
+      <div class="overlay__content">
+        <div
+          @click="overlayClose"
+          class="nav-item"
+          v-if="this.$store.state.token == ''"
+        >
+          <router-link class="nav-item" to="/register">Register</router-link>
+        </div>
+        <div
+          @click="overlayClose"
+          class="nav-item"
+          v-if="this.$store.state.token == ''"
+        >
+          <router-link class="nav-item" to="/login">Login</router-link>
+        </div>
+        <div
+          @click="overlayClose"
+          class="nav-item"
+          v-if="this.$store.state.token != ''"
+        >
+          <router-link class="nav-item" to="/treng/edit">TrEng</router-link>
+        </div>
+        <div
+          @click="overlayClose"
+          class="nav-item"
+          v-if="this.$store.state.token != ''"
+        >
+          <router-link class="nav-item" to="/reader">Reader</router-link>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
