@@ -215,6 +215,7 @@ export default {
         .then(response => {
           this.$store.state.token = response.data.access_token;
           console.log(this.$store.state.token);
+          this.$router.push({ name: "Reader" });
         })
         .catch(e => console.log(e));
     },
