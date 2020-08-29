@@ -70,7 +70,7 @@ export default {
   methods: {
     async getWords() {
       await axios
-        .get("http://localhost:5000/api/dic/treng1", {
+        .get("http://localhost:5000/api/dic/treng", {
           headers: {
             Authorization: `Bearer: ${this.$store.state.token}`
           }

@@ -6,7 +6,7 @@ import Register from "../views/Register.vue";
 import TrEngEdit from "../views/word/tr-eng/Edit.vue";
 import Reader from "../views/Reader.vue";
 //Test
-import Login from "../views/Login copy.vue";
+import Login from "../views/Login.vue";
 
 Vue.use(VueRouter);
 
