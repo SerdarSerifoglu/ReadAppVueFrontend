@@ -1,20 +1,32 @@
 <template>
   <div class="register">
-    <input
+    <!-- <input
       placeholder="isim soyisim giriniz"
       v-model="registerData.name"
       type="text"
-    />
-    <input
-      placeholder="e-mail giriniz"
+    /> -->
+    <div>{{ registerData.name }}</div>
+    <div>{{ registerData.password }}</div>
+    <app-input
+      v-model="registerData.name"
+      label="Name"
+      inputId="name"
+      divClass="col-md-4"
+    ></app-input>
+    <app-input
       v-model="registerData.email"
-      type="text"
-    />
-    <input
-      placeholder="şifre giriniz"
+      label="E-mail"
+      inputId="email"
+      divClass="col-md-4"
+      typeName="email"
+    ></app-input>
+    <app-input
       v-model="registerData.password"
-      type="text"
-    />
+      typeName="password"
+      label="Şifre"
+      inputId="sifre"
+      divClass="col-md-4"
+    ></app-input>
     <button @click="submit">Kayıt Ol</button>
     <button @click="readToken">Tokenı Al</button>
     {{ tokenNow }}
@@ -23,6 +35,7 @@
 
 <script>
 import axios from "axios";
+import Input from "../components/Input.vue";
 export default {
   data() {
     return {
@@ -35,9 +48,12 @@ export default {
     };
   },
   name: "Register",
-  components: {},
+  components: {
+    "app-input": Input
+  },
   methods: {
     submit() {
+      console.log(this.registerData.name);
       axios
         .post("http://localhost:5000/api/auth/register", {
           ...this.registerData
