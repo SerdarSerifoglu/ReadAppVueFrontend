@@ -1,185 +1,85 @@
 <style scoped>
-@import url("https://netdna.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.css");
-/* @import url(https://fonts.googleapis.com/css?family=Lato:400,300,700); */
-
-/* html {
-   height: 100%;
-} */
-
-.login {
-  /* Remember to use the other versions for IE 10 and older browsers! */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100%;
-  font-family: "lato", sans-serif;
-  color: #fff;
-  background: #222222;
-  background: #16222a; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to top,
-    #16222a,
-    #3a6073
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to top,
-    #16222a,
-    #3a6073
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+* {
+  padding: 0;
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
-
+*:focus {
+  outline: none;
+}
 .container {
-  background: rgba(58, 63, 68, 0.5);
-  border-radius: 5px;
-  box-shadow: 0 1.5px 0 0 rgba(0, 0, 0, 0.1);
-  width: 450px;
+  position: absolute;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  width: 500px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
-
-.logo {
-  font-family: "museo-slab";
+.logo1 {
+  width: 500px;
+  height: 100px;
+  background-image: url("../assets/HardworderSWG.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+input[type="text"],
+input[type="password"] {
+  width: 280px;
+  transition: 0.25s;
+  text-align: center;
+  padding: 15px 30px;
   font-size: 20px;
-  text-align: center;
-  padding: 20px 20px 0;
-  margin: 0;
+  margin: 20px 0px;
+  border: none;
+  border-radius: 15px;
+  /* border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+     */
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
-
-.login-item {
-  color: #ffff;
-  padding: 25px 25px 0;
-  margin: 20px 20px 0;
-  border-radius: 3px;
+.login-div button {
+  padding: 15px 50px;
+  margin: 20px 0px 10px 0px;
+  border-radius: 15px;
+  background-color: white;
+  color: white;
+  border: none;
+  font-size: 20px;
+  color: red;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
-
-input {
-  border: 0;
-  color: inherit;
-  font: inherit;
-  margin: 0;
-  outline: 0;
-  padding: 0;
-  -webkit-transition: background-color 0.3s;
-  transition: background-color 0.3s;
+input[type="text"]:focus,
+input[type="password"]:focus {
+  transition: 0.5s;
+  width: 380px;
 }
-
-.user:before {
-  content: "\f007";
-  font: 14px fontawesome;
-  color: #5b5b5b;
-}
-
-.lock:before {
-  content: "\f023";
-  font: 14px fontawesome;
-  color: #5b5b5b;
-}
-
-.login input[type="password"],
-.login input[type="text"],
-.login #submitButton {
-  width: 100%;
-}
-
-.login label,
-.login input[type="text"],
-.login input[type="password"],
-.login #submitButton {
-  border-radius: 0.25rem;
-  padding: 1rem;
-  color: #3a3f44;
-}
-
-.login label {
-  background-color: #222222;
-  border-bottom-right-radius: 0;
-  border-top-right-radius: 0;
-  padding-left: 1.25rem;
-  padding-right: 1.25rem;
-}
-
-.login input[type="text"],
-.login input[type="password"] {
-  background-color: #ffffff;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-}
-.login input[type="text"]:focus,
-.login input[type="text"]:hover,
-.login input[type="password"]:focus,
-.login input[type="password"]:hover {
-  background-color: #eeeeee;
-}
-.login #submitButton {
-  background-color: #00b9bc;
-  color: #eee;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-.login #submitButton:focus,
-.login #submitButton:hover {
-  background-color: #197071;
-}
-.form-field {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  margin-bottom: 2rem;
-}
-
-.hidden {
-  border: 0;
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
-
-.text--center {
-  text-align: center;
+.login-div button:hover {
+  background-color: red;
+  color: white;
+  transition: 0.5s;
 }
 </style>
 
 <template>
   <div class="login">
     <div class="container">
-      <div class="logo">Agent Q Dashboard</div>
-      <div class="login-item">
-        <div class="form-field">
-          <label class="user" for="login-username">
-            <span class="hidden">Username</span>
-          </label>
-          <input
-            id="login-username"
-            v-model="loginData.email"
-            type="text"
-            class="form-input"
-            placeholder="Username"
-            required
-          />
-        </div>
-
-        <div class="form-field">
-          <label class="lock" for="login-password"
-            ><span class="hidden">Password</span></label
-          >
-          <input
-            id="login-password"
-            v-model="loginData.password"
-            type="password"
-            class="form-input"
-            placeholder="Password"
-            required
-          />
-        </div>
-
-        <div class="form-field">
-          <button id="submitButton" @click="submit">Login</button>
-        </div>
+      <div class="logo1"></div>
+      <div class="username-div">
+        <input type="text" placeholder="Username" v-model="loginData.email" />
+      </div>
+      <div class="password-div">
+        <input
+          type="password"
+          placeholder="Password"
+          v-model="loginData.password"
+        />
+      </div>
+      <div class="login-div">
+        <button @click="submit">Login</button>
       </div>
     </div>
   </div>

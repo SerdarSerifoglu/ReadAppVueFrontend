@@ -1,4 +1,12 @@
-<style></style>
+<style scoped>
+.logoNavbar {
+  width: 250px;
+  height: 50px;
+  background-image: url("../assets/HardworderSWG.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+}</style
+>>
 
 <script>
 export default {
@@ -21,7 +29,7 @@ export default {
 <template>
   <div id="nav">
     <header>
-      <a class="logo" href="/"><img src="images/logo.svg" alt="logo"/></a>
+      <div class="logoNavbar"></div>
       <nav>
         <div class="nav__links">
           <div class="nav-item" v-if="this.$store.state.token == ''">
