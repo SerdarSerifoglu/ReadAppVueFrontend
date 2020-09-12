@@ -25,7 +25,7 @@
   background-repeat: no-repeat;
   background-position: center;
 }
-input[type="text"],
+input[type="email"],
 input[type="password"] {
   width: 280px;
   transition: 0.25s;
@@ -52,7 +52,7 @@ input[type="password"] {
   border: 2px solid rgba(0, 0, 0, 0.2);
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
 }
-input[type="text"]:focus,
+input[type="email"]:focus,
 input[type="password"]:focus {
   transition: 0.5s;
   width: 380px;
@@ -69,7 +69,7 @@ input[type="password"]:focus {
     <div class="container">
       <div class="logo1"></div>
       <div class="username-div">
-        <input type="text" placeholder="Username" v-model="loginData.email" />
+        <input type="email" placeholder="Email" v-model="loginData.email" />
       </div>
       <div class="password-div">
         <input
@@ -79,7 +79,7 @@ input[type="password"]:focus {
         />
       </div>
       <div class="login-div">
-        <button @click="submit">Login</button>
+        <button @click="submit">LOGIN</button>
       </div>
     </div>
   </div>
