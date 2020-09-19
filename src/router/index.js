@@ -1,12 +1,11 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-// import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
-import TrEngEdit from "../views/word/tr-eng/Edit.vue";
 import Reader from "../views/Reader.vue";
-//Test
+import PackAdd from "../views/pack/Add.vue";
 import Login from "../views/Login.vue";
+import Test from "../views/word/Add.vue";
 
 Vue.use(VueRouter);
 
@@ -36,14 +35,20 @@ const routes = [
     component: Register
   },
   {
-    path: "/treng/edit",
-    name: "TrEngEdit",
-    component: TrEngEdit
-  },
-  {
     path: "/reader",
     name: "Reader",
     component: Reader
+  },
+  {
+    path: "/pack",
+    name: "PackAdd",
+    component: PackAdd,
+    children: [{ path: "", component: PackAdd }]
+  },
+  {
+    path: "/test",
+    name: "Test",
+    component: Test
   }
 ];
 

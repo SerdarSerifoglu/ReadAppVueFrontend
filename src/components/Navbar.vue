@@ -5,8 +5,8 @@
   background-image: url("../assets/HardworderSWG.svg");
   background-repeat: no-repeat;
   background-position: center;
-}</style
->>
+}
+</style>
 
 <script>
 export default {
@@ -43,6 +43,12 @@ export default {
           </div>
           <div class="nav-item" v-if="this.$store.state.token != ''">
             <router-link class="nav-item" to="/reader">Reader</router-link>
+          </div>
+          <div class="nav-item" v-if="this.$store.state.token != ''">
+            <router-link class="nav-item" to="/pack">Packs</router-link>
+          </div>
+          <div class="nav-item" v-if="this.$store.state.token != ''">
+            <router-link class="nav-item" to="/test">Test</router-link>
           </div>
         </div>
       </nav>
