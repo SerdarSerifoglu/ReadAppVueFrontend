@@ -32,9 +32,6 @@ export default {
     },
     inputId: {
       type: String
-    },
-    vModel: {
-      type: String
     }
   }
 };
