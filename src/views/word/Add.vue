@@ -12,7 +12,7 @@
         >{{ item.title }}</option
       >
     </select>
-    <button class="btn btn-primary btn-md">
+    <button class="btn btn-primary btn-md" @click="newWord()">
       <span>
         <i class="fas fa-plus"></i>
       </span>
@@ -21,17 +21,31 @@
     <div class="addWord">
       <app-input
         inputId="mainWord"
-        label="Main"
+        label="Main Word"
         divClass="col-md-6 col-xs-12"
-        v-model="wordData.firstWordValue"
-        :dataValue="wordData.firstWordValue"
+        v-model="wordData.mainWord"
+        :dataValue="wordData.mainWord"
       ></app-input>
       <app-input
         inputId="secondaryWord"
-        label="Secondary"
+        label="Secondary Word"
         divClass="col-md-6 col-xs-12"
-        v-model="wordData.secondWordValue"
-        :dataValue="wordData.secondWordValue"
+        v-model="wordData.secondaryWord"
+        :dataValue="wordData.secondaryWord"
+      ></app-input>
+      <app-input
+        inputId="mainWordAF"
+        label="Main Word A.F."
+        divClass="col-md-6 col-xs-12"
+        v-model="wordData.mainWordAF"
+        :dataValue="wordData.mainWordAF"
+      ></app-input>
+      <app-input
+        inputId="secondaryWordAF"
+        label="Secondary Word A.F."
+        divClass="col-md-6 col-xs-12"
+        v-model="wordData.secondaryWordAF"
+        :dataValue="wordData.secondaryWordAF"
       ></app-input>
     </div>
     <button
@@ -56,10 +70,10 @@
         </thead>
         <tbody>
           <tr v-for="word in words" :key="word._id">
-            <td>{{ word.firstWordValue }}</td>
-            <td>{{ word.secondWordValue }}</td>
-            <td>{{ word.firstWordAF }}</td>
-            <td>{{ word.secondWordAF }}</td>
+            <td>{{ word.mainWord }}</td>
+            <td>{{ word.secondaryWord }}</td>
+            <td>{{ word.mainWordAF }}</td>
+            <td>{{ word.secondaryWordAF }}</td>
             <td>
               <button
                 class="btn btn-success"
@@ -85,10 +99,10 @@ export default {
       packComboboxData: [],
       words: [],
       wordData: {
-        firstWordValue: null,
-        firstWordAF: null,
-        secondWordValue: null,
-        secondWordAF: null
+        mainWord: null,
+        mainWordAF: null,
+        secondaryWord: null,
+        secondaryWordAF: null
       }
     };
   },
@@ -161,6 +175,14 @@ export default {
           this.packComboboxChange(this.selectedPack);
         })
         .catch(e => console.log(e));
+    },
+    newWord: function() {
+      this.wordData = {
+        mainWord: null,
+        mainWordAF: null,
+        secondaryWord: null,
+        secondaryWordAF: null
+      };
     }
   },
   async created() {
