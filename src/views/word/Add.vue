@@ -1,17 +1,9 @@
 <template>
   <div>
-    <select
-      class="form-control col-md-4"
-      @change="packComboboxChange($event)"
-      v-model="selectedPack"
-    >
-      <option
-        v-for="item in packComboboxData"
-        :value="item._id"
-        :key="item._id"
-        >{{ item.title }}</option
-      >
-    </select>
+    <app-combobox
+      :mainData="packComboboxData"
+      @comboboxChange="packComboboxChange($event)"
+    />
     <button class="btn btn-primary btn-md" @click="newWord()">
       <span>
         <i class="fas fa-plus"></i>
@@ -92,6 +84,7 @@
 <script>
 import axios from "axios";
 import Input from "../../components/Input.vue";
+import Combobox from "../../components/Combobox.vue";
 export default {
   data() {
     return {
@@ -107,12 +100,12 @@ export default {
     };
   },
   components: {
-    "app-input": Input
+    "app-input": Input,
+    "app-combobox": Combobox
   },
   methods: {
     packComboboxChange: async function(event) {
-      console.log(this.selectedPack);
-      if (this.selectedPack == "") this.selectedPack = event.target.value;
+      this.selectedPack = event;
       await axios
         .get("http://localhost:5000/api/pack/" + this.selectedPack + "/words", {
           headers: {
