@@ -45,51 +45,61 @@
 </style>
 
 <template>
-  <div class="reader">
-    <div class="form-group">
-      <textarea v-if="openTextArea" v-model="article"></textarea>
+  <div class="container">
+    <app-combobox
+      :mainData="packComboboxData"
+      @comboboxChange="selectedPack = $event"
+    />
+    <p>{{ words }}</p>
+    <div class="reader">
+      <div class="form-group">
+        <textarea v-if="openTextArea" v-model="article"></textarea>
+      </div>
+      <button @click="packComboboxChange" class="btn btn-primary">Add</button>
+
+      <p v-html="article" v-if="openTextArea"></p>
     </div>
-    <button @click="getWords" class="btn btn-primary">Add</button>
-    <p v-html="article" v-if="openTextArea"></p>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+import Combobox from "../components/Combobox.vue";
 export default {
   data() {
     return {
-      // "I will eat <span class='word' title='elma'>apple</span>",
+      selectedPack: "",
+      packComboboxData: [],
+      words: [],
       article: "I will eat apple by",
       openTextArea: true,
       word: {}
     };
   },
   name: "Edit",
-  components: {},
+  components: {
+    "app-combobox": Combobox
+  },
   methods: {
-    async getWords() {
+    packComboboxChange: async function() {
       await axios
-        .get("http://localhost:5000/api/dic/treng", {
+        .get("http://localhost:5000/api/pack/" + this.selectedPack + "/words", {
           headers: {
             Authorization: `Bearer: ${this.$store.state.token}`
           }
         })
         .then(response => {
-          console.log(response.data);
-          // console.log(this.article.toUpperCase().includes("APPLE"));
-          this.article = this.article.toLowerCase();
-          response.data.data.forEach(element => {
+          this.words = response.data.data[0].words;
+          console.log(this.words);
+          this.words.forEach(element => {
             if (
-              this.article.includes(" " + element.valEng1.toLowerCase() + " ")
+              this.article.includes(" " + element.mainWord.toLowerCase() + " ")
             ) {
+              var findValue = " " + element.mainWord.toLowerCase() + " ";
+              var regex = new RegExp(findValue, "gi");
               this.article = this.article.replace(
-                element.valEng1.toLowerCase(),
-                `<span class='tooltip'>${element.valEng1.toLowerCase()}
-                 <span class="custom critical">
-                <em>${element.valEng1.toLowerCase()}</em>
-                ${element.valTr1.toLowerCase()}</span>
-              </span>`
+                regex,
+                `<span class='tooltip'>${findValue}<span class="custom critical"><em>${findValue}</em>${element.secondaryWord.toLowerCase()}</span></span>`
               );
             }
           });
@@ -99,6 +109,18 @@ export default {
     readToken() {
       this.tokenNow = this.$store.state.token;
     }
+  },
+  async created() {
+    await axios
+      .get("http://localhost:5000/api/pack/forCbx", {
+        headers: {
+          Authorization: `Bearer: ${this.$store.state.token}`
+        }
+      })
+      .then(response => {
+        this.packComboboxData = response.data.data;
+      })
+      .catch(e => console.log(e));
   }
 };
 </script>
