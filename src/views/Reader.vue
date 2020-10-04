@@ -36,7 +36,7 @@ span {
     <div class="row">
       <label class="col-md-2">My Packs</label>
       <app-combobox
-        classValue="col-md-2"
+        classValue="col-md-6"
         :mainData="packComboboxData"
         @comboboxChange="selectedPack = $event"
       />
@@ -49,11 +49,12 @@ span {
           class="form-control"
           id="exampleFormControlTextarea1"
           rows="3"
+          style="margin-top:0.5rem"
         ></textarea>
       </div>
       <button @click="readButtonClick" class="btn btn-success">Read</button>
       <button
-        @click="openTextArea = true"
+        @click="clickNewArticleButton"
         class="btn btn-primary"
         style="margin-left:0.5rem"
       >
@@ -76,7 +77,8 @@ export default {
       words: [],
       article: "",
       readArticle: "",
-      openTextArea: true
+      openTextArea: true,
+      clickedReadButton: false
     };
   },
   name: "Edit",
@@ -89,7 +91,9 @@ export default {
         alert("Please select pack to read");
         return;
       }
+      if (this.clickedReadButton) return;
 
+      this.clickedReadButton = true;
       this.openTextArea = false;
 
       await axios
@@ -116,6 +120,10 @@ export default {
           });
         })
         .catch(e => console.log(e));
+    },
+    clickNewArticleButton() {
+      this.clickedReadButton = false;
+      this.openTextArea = true;
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
