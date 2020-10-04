@@ -48,17 +48,17 @@ span {
           v-model="article"
           class="form-control"
           id="exampleFormControlTextarea1"
-          rows="3"
+          rows="15"
           style="margin-top:0.5rem"
         ></textarea>
       </div>
-      <button @click="readButtonClick" class="btn btn-success">Read</button>
+      <button @click="readButtonClick" class="btn btn-success">READ</button>
       <button
         @click="clickNewArticleButton"
         class="btn btn-primary"
         style="margin-left:0.5rem"
       >
-        New Article
+        NEW ARTICLE
       </button>
 
       <p v-html="readArticle" v-if="!openTextArea"></p>
