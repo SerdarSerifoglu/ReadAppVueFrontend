@@ -1,7 +1,7 @@
 <template>
-  <div class="cbx">
+  <div :class="classValue">
     <select
-      class="form-control col-md-4"
+      class="form-control"
       v-model="selectedValue"
       @change="sendSelectedValue()"
     >
@@ -20,6 +20,10 @@ export default {
     };
   },
   props: {
+    classValue: {
+      type: String,
+      default: "col-xs-12"
+    },
     mainData: {
       type: Array
     }
