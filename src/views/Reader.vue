@@ -1,63 +1,66 @@
 <style>
-.tooltip {
-  border-bottom: 1px dotted #000000;
-  color: #000000;
-  outline: none;
-  cursor: help;
-  text-decoration: none;
+.tooltipS {
   position: relative;
+  display: inline-block;
   color: red;
-  font-weight: bolder;
-}
-.tooltip span {
-  margin-left: -999em;
-  position: absolute;
-}
-.tooltip:hover span {
-  border-radius: 5px 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.1);
-  -webkit-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-  -moz-box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
-  font-family: Calibri, Tahoma, Geneva, sans-serif;
-  position: absolute;
-  left: 1em;
-  top: 2em;
-  z-index: 99;
-  margin-left: 0;
-  width: 250px;
-}
-.tooltip:hover em {
-  font-family: Candara, Tahoma, Geneva, sans-serif;
-  font-size: 1.2em;
   font-weight: bold;
-  display: block;
-  padding: 0.2em 0 0.6em 0;
 }
-.custom {
-  padding: 0.5em 0.8em 0.8em 2em;
+.tooltipS .tooltiptext {
+  visibility: hidden;
+  width: auto;
+  max-width: 300px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  opacity: 0.8;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -25px;
+  left: 105%;
 }
-.critical {
-  background: #ffccaa;
-  border: 1px solid #ffad33;
+
+.tooltipS:hover .tooltiptext {
+  visibility: visible;
+}
+span {
+  white-space: pre-wrap;
 }
 </style>
 
 <template>
-  <div class="container">
-    <app-combobox
-      :mainData="packComboboxData"
-      @comboboxChange="selectedPack = $event"
-    />
-    <p>{{ words }}</p>
+  <div class="container" style="margin-top:75px">
+    <div class="row">
+      <label class="col-md-2">My Packs</label>
+      <app-combobox
+        classValue="col-md-2"
+        :mainData="packComboboxData"
+        @comboboxChange="selectedPack = $event"
+      />
+    </div>
     <div class="reader">
       <div class="form-group">
-        <textarea v-if="openTextArea" v-model="article"></textarea>
+        <textarea
+          v-if="openTextArea"
+          v-model="article"
+          class="form-control"
+          id="exampleFormControlTextarea1"
+          rows="3"
+        ></textarea>
       </div>
-      <button @click="packComboboxChange" class="btn btn-primary">Add</button>
+      <button @click="readButtonClick" class="btn btn-success">Read</button>
+      <button
+        @click="openTextArea = true"
+        class="btn btn-primary"
+        style="margin-left:0.5rem"
+      >
+        New Article
+      </button>
 
-      <p v-html="article" v-if="openTextArea"></p>
+      <p v-html="readArticle" v-if="!openTextArea"></p>
     </div>
   </div>
 </template>
@@ -71,9 +74,9 @@ export default {
       selectedPack: "",
       packComboboxData: [],
       words: [],
-      article: "I will eat apple by",
-      openTextArea: true,
-      word: {}
+      article: "",
+      readArticle: "",
+      openTextArea: true
     };
   },
   name: "Edit",
@@ -81,7 +84,14 @@ export default {
     "app-combobox": Combobox
   },
   methods: {
-    packComboboxChange: async function() {
+    readButtonClick: async function() {
+      if (this.selectedPack == "") {
+        alert("Please select pack to read");
+        return;
+      }
+
+      this.openTextArea = false;
+
       await axios
         .get("http://localhost:5000/api/pack/" + this.selectedPack + "/words", {
           headers: {
@@ -90,18 +100,19 @@ export default {
         })
         .then(response => {
           this.words = response.data.data[0].words;
-          console.log(this.words);
+          this.readArticle = this.article;
           this.words.forEach(element => {
-            if (
-              this.article.includes(" " + element.mainWord.toLowerCase() + " ")
-            ) {
-              var findValue = " " + element.mainWord.toLowerCase() + " ";
-              var regex = new RegExp(findValue, "gi");
-              this.article = this.article.replace(
-                regex,
-                `<span class='tooltip'>${findValue}<span class="custom critical"><em>${findValue}</em>${element.secondaryWord.toLowerCase()}</span></span>`
-              );
-            }
+            var search = element.mainWord.replace(
+              /[.*+?^${}()|[\]\\]/g,
+              "\\$&"
+            );
+
+            var re = new RegExp(search, "gi");
+
+            this.readArticle = this.readArticle.replace(
+              re,
+              `<span class='tooltipS'>${element.mainWord}<span class="tooltiptext"><em>${element.mainWord}</em> <br>${element.secondaryWord}</span></span>`
+            );
           });
         })
         .catch(e => console.log(e));
