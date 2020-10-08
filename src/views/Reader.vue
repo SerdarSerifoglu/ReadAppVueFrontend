@@ -33,59 +33,114 @@ span {
 
 <template>
   <div class="container" style="margin-top:75px">
-    <div class="row">
-      <label class="col-md-2">My Packs</label>
-      <app-combobox
-        classValue="col-md-6"
-        :mainData="packComboboxData"
-        @comboboxChange="selectedPack = $event"
-      />
-    </div>
-    <div class="reader">
-      <div class="form-group">
-        <textarea
-          v-if="openTextArea"
-          v-model="article"
-          class="form-control"
-          id="exampleFormControlTextarea1"
-          rows="15"
-          style="margin-top:0.5rem"
-        ></textarea>
+    <div class="mainView" @mouseup="selectWord">
+      <div class="row">
+        <label class="col-md-2">My Packs</label>
+        <app-combobox
+          classValue="col-md-6"
+          :mainData="packComboboxData"
+          @comboboxChange="selectedPack = $event"
+        />
       </div>
-      <button @click="readButtonClick" class="btn btn-success">READ</button>
-      <button
-        @click="clickNewArticleButton"
-        class="btn btn-primary"
-        style="margin-left:0.5rem"
-      >
-        NEW ARTICLE
-      </button>
+      <div class="reader">
+        <div class="form-group">
+          <textarea
+            v-if="openTextArea"
+            v-model="article"
+            class="form-control"
+            id="exampleFormControlTextarea1"
+            rows="15"
+            style="margin-top:0.5rem"
+          ></textarea>
+        </div>
+        <button @click="readButtonClick" class="btn btn-success">READ</button>
+        <button
+          @click="clickNewArticleButton"
+          class="btn btn-primary"
+          style="margin-left:0.5rem"
+        >
+          NEW ARTICLE
+        </button>
 
-      <p v-html="readArticle" v-if="!openTextArea"></p>
+        <p v-html="readArticle" v-if="!openTextArea"></p>
+      </div>
     </div>
+    <!-- Modal -->
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-toggle="modal"
+      data-target=".bd-example-modal-sm"
+    >
+      Small modal
+    </button>
+
+    <div
+      class="modal fade bd-example-modal-sm"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="mySmallModalLabel"
+      aria-hidden="true"
+      style="margin:5rem"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div style="margin:5rem;">
+            <app-input
+              inputId="mainWord"
+              label="Main Word"
+              divClass="col-md-12 col-xs-12"
+              v-model="wordData.mainWord"
+              :dataValue="wordData.mainWord"
+            ></app-input>
+            <app-input
+              inputId="secondaryWord"
+              label="Secondary Word"
+              divClass="col-md-12 col-xs-12"
+              v-model="wordData.secondaryWord"
+              :dataValue="wordData.secondaryWord"
+            ></app-input>
+            <button class="btn btn-success col-md-3 center">ADD</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal End -->
+    <p>{{ selectData }}</p>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import Combobox from "../components/Combobox.vue";
+import Input from "../components/Input.vue";
 export default {
   data() {
     return {
+      selectData: "",
       selectedPack: "",
       packComboboxData: [],
       words: [],
       article: "",
       readArticle: "",
       openTextArea: true,
-      clickedReadButton: false
+      clickedReadButton: false,
+      wordData: {
+        mainWord: "",
+        secondaryWord: ""
+      }
     };
   },
   name: "Edit",
   components: {
-    "app-combobox": Combobox
+    "app-combobox": Combobox,
+    "app-input": Input
   },
   methods: {
+    selectWord() {
+      this.selectData = window.getSelection().toString();
+      this.wordData.mainWord = this.selectData;
+    },
     readButtonClick: async function() {
       if (this.selectedPack == "") {
         alert("Please select pack to read");
