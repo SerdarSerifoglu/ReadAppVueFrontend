@@ -100,13 +100,18 @@ span {
               v-model="wordData.secondaryWord"
               :dataValue="wordData.secondaryWord"
             ></app-input>
-            <button class="btn btn-success col-md-3 center">ADD</button>
+            <button
+              class="btn btn-success col-md-3 center"
+              @click="insertOrUpdateWord()"
+            >
+              ADD
+            </button>
           </div>
         </div>
       </div>
     </div>
     <!-- Modal End -->
-    <p>{{ selectData }}</p>
+    <p>{{ wordData }}</p>
   </div>
 </template>
 
@@ -137,9 +142,30 @@ export default {
     "app-input": Input
   },
   methods: {
-    selectWord() {
+    async selectWord() {
       this.selectData = window.getSelection().toString();
+      this.wordData = {};
       this.wordData.mainWord = this.selectData;
+
+      await axios
+        .get(
+          "http://localhost:5000/api/pack/" +
+            this.selectedPack +
+            "/word/" +
+            this.selectData,
+          {
+            headers: {
+              Authorization: `Bearer: ${this.$store.state.token}`
+            }
+          }
+        )
+        .then(response => {
+          console.log(response.data.data[0]);
+          if (response.data.data[0] != undefined) {
+            this.wordData = response.data.data[0];
+          }
+        })
+        .catch(e => console.log(e));
     },
     readButtonClick: async function() {
       if (this.selectedPack == "") {
@@ -161,16 +187,13 @@ export default {
           this.words = response.data.data[0].words;
           this.readArticle = this.article;
           this.words.forEach(element => {
-            var search = element.mainWord.replace(
-              /[.*+?^${}()|[\]\\]/g,
-              "\\$&"
+            var regx = new RegExp(
+              "(" + element.mainWord + ")(?![^<>]*</)",
+              "gi"
             );
-
-            var re = new RegExp(search, "gi");
-
             this.readArticle = this.readArticle.replace(
-              re,
-              `<span class='tooltipS'>${element.mainWord}<span class="tooltiptext"><em>${element.mainWord}</em> <br>${element.secondaryWord}</span></span>`
+              regx,
+              `<span class="tooltipS">$1<span class="tooltiptext">${element.secondaryWord}</span></span>`
             );
           });
         })
@@ -182,6 +205,43 @@ export default {
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
+    },
+    insertOrUpdateWord: async function() {
+      //işlem uygulanıcak data varsa update yoksa add
+      if (this.wordData._id === undefined) {
+        await axios
+          .post(
+            "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
+            { ...this.wordData },
+            {
+              headers: {
+                Authorization: `Bearer: ${this.$store.state.token}`
+              }
+            }
+          )
+          .then(response => {
+            console.log(response);
+            alert("Word added");
+          })
+          .catch(e => console.log(e));
+      } else {
+        await axios
+          .put(
+            "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
+            { ...this.wordData },
+            {
+              headers: {
+                Authorization: `Bearer: ${this.$store.state.token}`
+              }
+            }
+          )
+          .then(response => {
+            console.log(response);
+            alert("Word updated");
+          })
+          .catch(e => console.log(e));
+      }
+      this.wordData = {};
     }
   },
   async created() {
