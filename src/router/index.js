@@ -5,6 +5,7 @@ import Reader from "../views/Reader.vue";
 import PackAdd from "../views/pack/Add.vue";
 import Login from "../views/Login.vue";
 import Test from "../views/word/Add.vue";
+import store from "../store/index.js";
 
 Vue.use(VueRouter);
 
@@ -23,6 +24,14 @@ const routes = [
     path: "/reader",
     name: "Reader",
     component: Reader,
+    //herhangi bir router'a girmeden önce yapacağı işlem
+    beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        next("/login");
+      }
+    },
   },
   {
     path: "/pack",

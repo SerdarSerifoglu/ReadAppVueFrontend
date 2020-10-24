@@ -29,6 +29,12 @@
 span {
   white-space: pre-wrap;
 }
+.articleBoard {
+  border: 1px solid black;
+  border-radius: 0.2rem;
+  margin: 1rem;
+  padding: 0.5rem;
+}
 </style>
 
 <template>
@@ -62,7 +68,11 @@ span {
           NEW ARTICLE
         </button>
 
-        <p v-html="readArticle" v-if="!openTextArea"></p>
+        <p
+          class="articleBoard col-xs-12"
+          v-html="readArticle"
+          v-if="!openTextArea"
+        ></p>
       </div>
     </div>
     <!-- Modal -->
@@ -72,7 +82,7 @@ span {
       data-toggle="modal"
       data-target=".bd-example-modal-sm"
     >
-      Small modal
+      Add Word
     </button>
 
     <div
@@ -254,7 +264,10 @@ export default {
       .then(response => {
         this.packComboboxData = response.data.data;
       })
-      .catch(e => console.log(e));
+      .catch(e => {
+        console.log(e.status, e.message);
+        this.$store.dispatch("clearToken");
+      });
   }
 };
 </script>

@@ -22,6 +22,9 @@ export default {
     },
     overlayClose: function() {
       this.overlayClassName = "overlay";
+    },
+    logout: function() {
+      this.$store.dispatch("logout");
     }
   }
 };
@@ -52,7 +55,7 @@ export default {
           </div>
         </div>
       </nav>
-      <a class="cta" href="#">Contact</a>
+      <a class="cta" @click.prevent="logout" href="#">Logout</a>
       <p class="menu cta" @click="overlayActive">Menu</p>
     </header>
     <div :class="overlayClassName">

@@ -86,7 +86,6 @@ input[type="password"]:focus {
 </template>
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
@@ -101,14 +100,8 @@ export default {
   components: {},
   methods: {
     submit() {
-      axios
-        .post("http://localhost:5000/api/auth/login", { ...this.loginData })
-        .then(response => {
-          this.$store.state.token = response.data.access_token;
-          console.log(this.$store.state.token);
-          this.$router.push({ name: "Reader" });
-        })
-        .catch(e => console.log(e));
+      //store'daki actionları component üzerinden erişmek için dispatch kullanılır.
+      this.$store.dispatch("login", { ...this.loginData });
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
