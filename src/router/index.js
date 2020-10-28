@@ -25,11 +25,13 @@ const routes = [
     name: "Reader",
     component: Reader,
     //herhangi bir router'a girmeden önce yapacağı işlem
-    beforeEnter(to, from, next) {
+    async beforeEnter(to, from, next) {
       if (store.getters.isAuthenticated) {
         next();
       } else {
-        next("/login");
+        await store.dispatch("initAuth");
+        console.log("attı router");
+        next();
       }
     },
   },

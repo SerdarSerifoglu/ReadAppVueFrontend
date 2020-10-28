@@ -154,6 +154,9 @@ export default {
   methods: {
     async selectWord() {
       this.selectData = window.getSelection().toString();
+      if (this.selectData == "") {
+        return;
+      }
       this.wordData = {};
       this.wordData.mainWord = this.selectData;
 
@@ -255,6 +258,7 @@ export default {
     }
   },
   async created() {
+    console.log("Created Reader: " + this.$store.state.token);
     await axios
       .get("http://localhost:5000/api/pack/forCbx", {
         headers: {

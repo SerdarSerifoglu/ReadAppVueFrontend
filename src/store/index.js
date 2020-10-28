@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    token: "",
+    token: localStorage.getItem("token") || "",
   },
   mutations: {
     setToken(state, token) {
@@ -20,12 +20,30 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    initAuth({ commit }) {
+    async initAuth({ commit }) {
       let token = localStorage.getItem("token");
       console.log("Token:" + token);
       if (token != "") {
-        commit("setToken", token);
+        await axios
+          .get("http://localhost:5000/api/auth/tokentest", {
+            headers: {
+              Authorization: `Bearer: ${token}`,
+            },
+          })
+          .then((response) => {
+            console.log(response.data);
+            if (response.data.success === false) {
+              commit("clearToken");
+              router.push("/login");
+            } else {
+              commit("setToken", token);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
       } else {
+        commit("clearToken");
         router.push("/login");
       }
     },
@@ -49,6 +67,7 @@ export default new Vuex.Store({
   },
   getters: {
     isAuthenticated(state) {
+      console.log("isAuthenticated Store: " + state.token);
       return state.token != "";
     },
   },
