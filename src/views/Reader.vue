@@ -41,12 +41,25 @@ span {
   <div class="container" style="margin-top:75px">
     <div class="mainView" @mouseup="selectWord">
       <div class="row">
-        <label class="col-md-2">My Packs</label>
+        <div class="col-sm-3">
+          <label>My Packs</label>
+        </div>
         <app-combobox
-          classValue="col-md-6"
+          classValue="col-sm-6"
           :mainData="packComboboxData"
           @comboboxChange="selectedPack = $event"
         />
+
+        <div class="col-sm-3">
+          <button
+            type="button"
+            class="btn btn-primary float-right "
+            data-toggle="modal"
+            data-target=".bd-example-modal-sm"
+          >
+            Add Word
+          </button>
+        </div>
       </div>
       <div class="reader">
         <div class="form-group">
@@ -65,7 +78,7 @@ span {
           class="btn btn-primary"
           style="margin-left:0.5rem"
         >
-          NEW ARTICLE
+          CHANGE ARTICLE
         </button>
 
         <p
@@ -76,14 +89,6 @@ span {
       </div>
     </div>
     <!-- Modal -->
-    <button
-      type="button"
-      class="btn btn-primary"
-      data-toggle="modal"
-      data-target=".bd-example-modal-sm"
-    >
-      Add Word
-    </button>
 
     <div
       class="modal fade bd-example-modal-sm"
@@ -122,6 +127,8 @@ span {
     </div>
     <!-- Modal End -->
     <p>{{ wordData }}</p>
+
+    <ArticleList @data="article = $event"></ArticleList>
   </div>
 </template>
 
@@ -129,6 +136,7 @@ span {
 import axios from "axios";
 import Combobox from "../components/Combobox.vue";
 import Input from "../components/Input.vue";
+import ArticleList from "../components/ArticleList.vue";
 export default {
   data() {
     return {
@@ -149,7 +157,8 @@ export default {
   name: "Edit",
   components: {
     "app-combobox": Combobox,
-    "app-input": Input
+    "app-input": Input,
+    ArticleList
   },
   methods: {
     async selectWord() {
@@ -198,10 +207,15 @@ export default {
         })
         .then(response => {
           this.words = response.data.data[0].words;
+
+          this.words.sort(function(a, b) {
+            return b.mainWord.length - a.mainWord.length;
+          });
+          console.log(this.words);
           this.readArticle = this.article;
           this.words.forEach(element => {
             var regx = new RegExp(
-              "(" + element.mainWord + ")(?![^<>]*</)",
+              "(" + element.mainWord + ")(?![^<>]*<*>)",
               "gi"
             );
             this.readArticle = this.readArticle.replace(
@@ -272,6 +286,12 @@ export default {
         console.log(e.status, e.message);
         this.$store.dispatch("clearToken");
       });
+  },
+  watch: {
+    article() {
+      this.clickedReadButton = false;
+      this.openTextArea = true;
+    }
   }
 };
 </script>
