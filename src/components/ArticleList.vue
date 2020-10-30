@@ -16,10 +16,7 @@
           <td>{{ article.title }}</td>
           <td>{{ article.description }}</td>
           <td>
-            <button
-              class="btn btn-success"
-              @click="sendArticle(article.article)"
-            >
+            <button class="btn btn-success" @click="sendArticle(article)">
               SELECT
             </button>
           </td>

@@ -42,7 +42,7 @@ span {
     <div class="mainView" @mouseup="selectWord">
       <div class="row">
         <div class="col-sm-3">
-          <label>My Packs</label>
+          <label>Choose Pack</label>
         </div>
         <app-combobox
           classValue="col-sm-6"
@@ -61,21 +61,38 @@ span {
           </button>
         </div>
       </div>
+
       <div class="reader">
+        <app-input
+          inputId="articleTitle"
+          label="Article Title"
+          divClass="col-md-12 col-xs-12"
+          v-model="articleData.title"
+          :dataValue="articleData.title"
+        ></app-input>
+        <app-input
+          inputId="articleDescription"
+          label="Article Description"
+          divClass="col-md-12 col-xs-12"
+          v-model="articleData.description"
+          :dataValue="articleData.description"
+        ></app-input>
         <div class="form-group">
           <textarea
             v-if="openTextArea"
-            v-model="article"
+            v-model="articleData.article"
             class="form-control"
             id="exampleFormControlTextarea1"
             rows="15"
             style="margin-top:0.5rem"
           ></textarea>
         </div>
-        <button @click="readButtonClick" class="btn btn-success">READ</button>
+        <button @click="readButtonClick" class="btn btn-success btn-lg">
+          READ
+        </button>
         <button
           @click="clickNewArticleButton"
-          class="btn btn-primary"
+          class="btn btn-primary btn-lg"
           style="margin-left:0.5rem"
         >
           CHANGE ARTICLE
@@ -128,7 +145,7 @@ span {
     <!-- Modal End -->
     <p>{{ wordData }}</p>
 
-    <ArticleList @data="article = $event"></ArticleList>
+    <ArticleList @data="articleData = $event"></ArticleList>
   </div>
 </template>
 
@@ -151,6 +168,11 @@ export default {
       wordData: {
         mainWord: "",
         secondaryWord: ""
+      },
+      articleData: {
+        title: "",
+        description: "",
+        article: ""
       }
     };
   },
@@ -212,15 +234,15 @@ export default {
             return b.mainWord.length - a.mainWord.length;
           });
           console.log(this.words);
-          this.readArticle = this.article;
+          this.readArticle = this.articleData.article;
           this.words.forEach(element => {
             var regx = new RegExp(
-              "(" + element.mainWord + ")(?![^<>]*<*>)",
+              "(?!^>" + element.mainWord + ")(?![^<>]*<*>)",
               "gi"
             );
             this.readArticle = this.readArticle.replace(
               regx,
-              `<span class="tooltipS">$1<span class="tooltiptext">${element.secondaryWord}</span></span>`
+              `<span class="tooltipS">${element.mainWord}<span class="tooltiptext">${element.secondaryWord}</span></span>`
             );
           });
         })
@@ -288,7 +310,7 @@ export default {
       });
   },
   watch: {
-    article() {
+    articleData() {
       this.clickedReadButton = false;
       this.openTextArea = true;
     }
