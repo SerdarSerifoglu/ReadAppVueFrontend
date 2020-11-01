@@ -89,6 +89,9 @@
         <button @click="clickNewArticleButton" class="btn btn-primary btn-lg" style="margin-left:0.5rem">
           CHANGE ARTICLE
         </button>
+        <button @click="saveArticle" class="btn btn-warning btn-lg" style="margin-left:0.5rem">
+          SAVE ARTICLE
+        </button>
 
         <p class="articleBoard col-xs-12" v-html="readArticle" v-if="!openTextArea"></p>
       </div>
@@ -268,6 +271,59 @@
             .catch((e) => console.log(e));
         }
         this.wordData = {};
+      },
+      saveArticle: async function() {
+        if (this.articleData.title === "") {
+          return;
+        }
+        var articleModel = {};
+        await axios
+          .get("http://localhost:5000/api/article/title/" + this.articleData.title, {
+            headers: {
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
+          })
+          .then((response) => {
+            if (response.data.data != []) {
+              articleModel = response.data.data[0];
+            }
+          })
+          .catch((e) => console.log(e));
+        console.log(articleModel);
+        if (articleModel === undefined) {
+          await axios
+            .post(
+              "http://localhost:5000/api/article/add/",
+              { ...this.articleData },
+              {
+                headers: {
+                  Authorization: `Bearer: ${this.$store.state.token}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+              alert("Article added");
+            })
+            .catch((e) => console.log(e));
+        } else {
+          articleModel = { ...articleModel, ...this.articleData };
+          await axios
+            .put(
+              "http://localhost:5000/api/article/add/",
+              { ...articleModel },
+              {
+                headers: {
+                  Authorization: `Bearer: ${this.$store.state.token}`,
+                },
+              }
+            )
+            .then((response) => {
+              console.log(response);
+              alert("Article saved");
+            })
+            .catch((e) => console.log(e));
+        }
       },
     },
     async created() {
