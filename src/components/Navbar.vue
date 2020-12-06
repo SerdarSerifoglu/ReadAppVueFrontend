@@ -13,20 +13,20 @@ export default {
   name: "Navbar",
   data() {
     return {
-      overlayClassName: "overlay"
+      overlayClassName: "overlay",
     };
   },
   methods: {
-    overlayActive: function() {
+    overlayActive: function () {
       this.overlayClassName = "overlay overlay--active";
     },
-    overlayClose: function() {
+    overlayClose: function () {
       this.overlayClassName = "overlay";
     },
-    logout: function() {
+    logout: function () {
       this.$store.dispatch("logout");
-    }
-  }
+    },
+  },
 };
 </script>
 <template>

@@ -5,9 +5,9 @@
       v-model="selectedValue"
       @change="sendSelectedValue()"
     >
-      <option v-for="item in mainData" :value="item._id" :key="item._id">{{
-        item.title
-      }}</option>
+      <option v-for="item in mainData" :value="item._id" :key="item._id">
+        {{ item.title }}
+      </option>
     </select>
   </div>
 </template>
@@ -16,22 +16,22 @@
 export default {
   data() {
     return {
-      selectedValue: ""
+      selectedValue: "",
     };
   },
   props: {
     classValue: {
       type: String,
-      default: "col-xs-12"
+      default: "col-xs-12",
     },
     mainData: {
-      type: Array
-    }
+      type: Array,
+    },
   },
   methods: {
     sendSelectedValue() {
       this.$emit("comboboxChange", this.selectedValue);
-    }
-  }
+    },
+  },
 };
 </script>

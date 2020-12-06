@@ -91,9 +91,9 @@ export default {
     return {
       loginData: {
         email: "",
-        password: ""
+        password: "",
       },
-      tokenNow: ""
+      tokenNow: "",
     };
   },
   name: "Login",
@@ -105,7 +105,7 @@ export default {
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
-    }
-  }
+    },
+  },
 };
 </script>

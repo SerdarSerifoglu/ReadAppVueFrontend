@@ -9,11 +9,11 @@
 import Navbar from "./components/Navbar.vue";
 export default {
   components: {
-    Navbar
+    Navbar,
   },
   created() {
     this.$store.dispatch("initAuth");
-  }
+  },
 };
 </script>
 

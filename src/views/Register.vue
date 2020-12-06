@@ -31,9 +31,9 @@ export default {
       registerData: {
         name: "",
         email: "",
-        password: ""
+        password: "",
       },
-      tokenNow: ""
+      tokenNow: "",
     };
   },
   name: "Register",
@@ -43,17 +43,17 @@ export default {
       console.log(this.registerData.name);
       axios
         .post("http://localhost:5000/api/auth/register", {
-          ...this.registerData
+          ...this.registerData,
         })
-        .then(response => {
+        .then((response) => {
           console.log(response);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
-    }
-  }
+    },
+  },
 };
 </script>
 

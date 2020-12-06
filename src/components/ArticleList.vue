@@ -31,27 +31,27 @@ import axios from "axios";
 export default {
   data() {
     return {
-      articles: []
+      articles: [],
     };
   },
-  created: async function() {
+  created: async function () {
     await axios
       .get("http://localhost:5000/api/article/", {
         headers: {
-          Authorization: `Bearer: ${this.$store.state.token}`
-        }
+          Authorization: `Bearer: ${this.$store.state.token}`,
+        },
       })
-      .then(response => {
+      .then((response) => {
         this.articles = response.data.data;
         console.log(response.data.data);
       })
-      .catch(e => console.log(e));
+      .catch((e) => console.log(e));
   },
   methods: {
     sendArticle(article) {
       console.log(article);
       this.$emit("data", article);
-    }
-  }
+    },
+  },
 };
 </script>

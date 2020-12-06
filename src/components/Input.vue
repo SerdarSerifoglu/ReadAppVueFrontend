@@ -1,5 +1,5 @@
 <template>
-  <div :class="divClass" style="margin:10px;">
+  <div :class="divClass" style="margin: 10px">
     <label>{{ label }}</label>
     <input
       v-bind:value="dataValue"
@@ -17,22 +17,22 @@ export default {
   },
   props: {
     dataValue: {
-      type: String
+      type: String,
     },
     divClass: {
       type: String,
-      default: "col-xs-12"
+      default: "col-xs-12",
     },
     label: {
-      type: String
+      type: String,
     },
     typeName: {
       type: String,
-      default: "text"
+      default: "text",
     },
     inputId: {
-      type: String
-    }
-  }
+      type: String,
+    },
+  },
 };
 </script>

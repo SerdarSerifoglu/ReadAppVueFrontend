@@ -95,29 +95,29 @@ export default {
         mainWord: null,
         mainWordAF: null,
         secondaryWord: null,
-        secondaryWordAF: null
-      }
+        secondaryWordAF: null,
+      },
     };
   },
   components: {
     "app-input": Input,
-    "app-combobox": Combobox
+    "app-combobox": Combobox,
   },
   methods: {
-    packComboboxChange: async function(event) {
+    packComboboxChange: async function (event) {
       this.selectedPack = event;
       await axios
         .get("http://localhost:5000/api/pack/" + this.selectedPack + "/words", {
           headers: {
-            Authorization: `Bearer: ${this.$store.state.token}`
-          }
+            Authorization: `Bearer: ${this.$store.state.token}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.words = response.data.data[0].words;
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    editButtonClick: async function(wordId) {
+    editButtonClick: async function (wordId) {
       await axios
         .get(
           "http://localhost:5000/api/pack/" +
@@ -126,70 +126,70 @@ export default {
             wordId,
           {
             headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`
-            }
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
           }
         )
-        .then(response => {
+        .then((response) => {
           this.wordData = response.data.data[0];
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    saveWord: async function() {
+    saveWord: async function () {
       await axios
         .post(
           "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
           { ...this.wordData },
           {
             headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`
-            }
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
           }
         )
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    updateWord: async function() {
+    updateWord: async function () {
       await axios
         .put(
           "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
           { ...this.wordData },
           {
             headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`
-            }
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
           }
         )
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    newWord: function() {
+    newWord: function () {
       this.wordData = {
         mainWord: null,
         mainWordAF: null,
         secondaryWord: null,
-        secondaryWordAF: null
+        secondaryWordAF: null,
       };
-    }
+    },
   },
   async created() {
     await axios
       .get("http://localhost:5000/api/pack/forCbx", {
         headers: {
-          Authorization: `Bearer: ${this.$store.state.token}`
-        }
+          Authorization: `Bearer: ${this.$store.state.token}`,
+        },
       })
-      .then(response => {
+      .then((response) => {
         this.packComboboxData = response.data.data;
       })
-      .catch(e => console.log(e));
-  }
+      .catch((e) => console.log(e));
+  },
 };
 </script>
 

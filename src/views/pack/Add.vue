@@ -24,13 +24,13 @@ export default {
     return {
       packData: {
         title: "",
-        description: ""
-      }
+        description: "",
+      },
     };
   },
   name: "PackAdd",
   components: {
-    "app-input": Input
+    "app-input": Input,
   },
   methods: {
     async add() {
@@ -40,15 +40,15 @@ export default {
           { ...this.packData },
           {
             headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`
-            }
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
           }
         )
-        .then(response => {
+        .then((response) => {
           console.log(response);
         })
-        .catch(e => console.log(e));
-    }
-  }
+        .catch((e) => console.log(e));
+    },
+  },
 };
 </script>
