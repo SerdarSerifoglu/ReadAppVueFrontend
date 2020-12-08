@@ -74,10 +74,13 @@ span {
           divClass="col-md-12 col-xs-12"
           v-model="articleData.title"
           :dataValue="articleData.title"
-          :attention1="$v.articleData.title.required"
-          attention1Text="Title is required"
         ></app-input>
         <app-input
+          @input="$v.articleData.description.$touch()"
+          :inputClass="{
+            'form-control': true,
+            'is-invalid': $v.articleData.description.$error,
+          }"
           inputId="articleDescription"
           label="Article Description"
           divClass="col-md-12 col-xs-12"
@@ -88,7 +91,11 @@ span {
           <textarea
             v-if="openTextArea"
             v-model="articleData.article"
-            class="form-control"
+            @input="$v.articleData.article.$touch()"
+            :class="{
+              'form-control': true,
+              'is-invalid': $v.articleData.article.$error,
+            }"
             id="exampleFormControlTextarea1"
             rows="15"
             style="margin-top: 0.5rem"
@@ -108,7 +115,7 @@ span {
           @click="saveArticle"
           class="btn btn-warning btn-lg"
           style="margin-left: 0.5rem"
-          :disabled="$v.$invalid"
+          :disabled="$v.articleData.$invalid"
         >
           SAVE ARTICLE
         </button>
@@ -134,6 +141,11 @@ span {
         <div class="modal-content">
           <div style="margin: 5rem">
             <app-input
+              @input="$v.wordData.mainWord.$touch()"
+              :inputClass="{
+                'form-control': true,
+                'is-invalid': $v.wordData.mainWord.$error,
+              }"
               inputId="mainWord"
               label="Main Word"
               divClass="col-md-12 col-xs-12"
@@ -141,6 +153,11 @@ span {
               :dataValue="wordData.mainWord"
             ></app-input>
             <app-input
+              @input="$v.wordData.secondaryWord.$touch()"
+              :inputClass="{
+                'form-control': true,
+                'is-invalid': $v.wordData.secondaryWord.$error,
+              }"
               inputId="secondaryWord"
               label="Secondary Word"
               divClass="col-md-12 col-xs-12"
@@ -150,6 +167,7 @@ span {
             <button
               class="btn btn-success col-md-3 center"
               @click="insertOrUpdateWord()"
+              :disabled="$v.wordData.$invalid"
             >
               ADD
             </button>
@@ -194,9 +212,13 @@ export default {
   },
   validations: {
     articleData: {
-      title: {
-        required,
-      },
+      title: { required },
+      description: { required },
+      article: { required },
+    },
+    wordData: {
+      mainWord: { required },
+      secondaryWord: { required },
     },
   },
   name: "Edit",

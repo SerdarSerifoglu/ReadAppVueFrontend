@@ -1,16 +1,18 @@
 <template>
-  <div :class="divClass" style="margin: 10px">
-    <label>{{ label }}</label>
-    <input
-      v-bind:value="dataValue"
-      v-on:input="$emit('input', $event.target.value)"
-      :type="typeName"
-      :class="inputClass"
-      :id="inputId"
-    />
-    <small class="text-danger" v-if="!attention1">{{ attention1Text }}</small>
-    <small class="text-danger" v-if="!attention2">{{ attention2Text }}</small>
-    <small class="text-danger" v-if="!attention3">{{ attention3Text }}</small>
+  <div class="form-group">
+    <div :class="divClass">
+      <label>{{ label }}</label>
+      <input
+        v-bind:value="dataValue"
+        v-on:input="$emit('input', $event.target.value)"
+        :type="typeName"
+        :class="inputClass"
+        :id="inputId"
+      />
+      <small class="text-danger" v-if="!attention1">{{ attention1Text }}</small>
+      <small class="text-danger" v-if="!attention2">{{ attention2Text }}</small>
+      <small class="text-danger" v-if="!attention3">{{ attention3Text }}</small>
+    </div>
   </div>
 </template>
 <script>
