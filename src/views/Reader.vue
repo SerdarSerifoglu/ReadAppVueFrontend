@@ -74,6 +74,8 @@ span {
           divClass="col-md-12 col-xs-12"
           v-model="articleData.title"
           :dataValue="articleData.title"
+          :attention1="$v.articleData.title.required"
+          attention1Text="Title is required !"
         ></app-input>
         <app-input
           @input="$v.articleData.description.$touch()"
@@ -86,6 +88,8 @@ span {
           divClass="col-md-12 col-xs-12"
           v-model="articleData.description"
           :dataValue="articleData.description"
+          :attention1="$v.articleData.description.required"
+          attention1Text="Description is required !"
         ></app-input>
         <div class="form-group">
           <textarea
@@ -100,8 +104,15 @@ span {
             rows="15"
             style="margin-top: 0.5rem"
           ></textarea>
+          <small class="text-danger" v-if="!$v.articleData.article.required"
+            >Article is required !</small
+          >
         </div>
-        <button @click="readButtonClick" class="btn btn-success btn-lg">
+        <button
+          @click="readButtonClick"
+          class="btn btn-success btn-lg"
+          :disabled="!$v.selectedPack.required"
+        >
           READ
         </button>
         <button
@@ -219,6 +230,9 @@ export default {
     wordData: {
       mainWord: { required },
       secondaryWord: { required },
+    },
+    selectedPack: {
+      required,
     },
   },
   name: "Edit",
