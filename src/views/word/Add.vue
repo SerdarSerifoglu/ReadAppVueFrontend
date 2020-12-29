@@ -73,6 +73,13 @@
               >
                 Edit
               </button>
+              <span> | </span>
+              <button
+                class="btn btn-danger"
+                @click="deleteButtonClick(word._id)"
+              >
+                Delete
+              </button>
             </td>
           </tr>
         </tbody>
@@ -132,6 +139,25 @@ export default {
         )
         .then((response) => {
           this.wordData = response.data.data[0];
+        })
+        .catch((e) => console.log(e));
+    },
+    deleteButtonClick: async function (wordId) {
+      await axios
+        .delete(
+          "http://localhost:5000/api/pack/" +
+            this.selectedPack +
+            "/word/" +
+            wordId,
+          {
+            headers: {
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
+          }
+        )
+        .then((response) => {
+          response;
+          this.packComboboxChange(this.selectedPack);
         })
         .catch((e) => console.log(e));
     },
