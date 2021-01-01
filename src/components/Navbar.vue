@@ -5,6 +5,30 @@
   background-image: url("../assets/HardworderSWG.svg");
   background-repeat: no-repeat;
   background-position: center;
+  background-color: #fcf1e3;
+}
+form {
+  margin-block-end: 0em;
+}
+.navbar-dark .navbar-nav .nav-link,
+#dropdown05 {
+  color: #ffa026;
+}
+
+.navbar-dark .navbar-nav .nav-link:hover {
+  color: #ffffff;
+}
+.navbar-dark .navbar-nav .nav-link:focus {
+  color: #ffffff;
+}
+.dropdown-item:hover {
+  background-color: #ffa026;
+}
+.dropdown-menu {
+  background-color: #fcf1e3;
+}
+.navbarUsername {
+  color: #ffa026;
 }
 </style>
 
@@ -31,65 +55,71 @@ export default {
 </script>
 <template>
   <div id="nav">
-    <header>
-      <div class="logoNavbar"></div>
-      <nav>
-        <div class="nav__links">
-          <div class="nav-item" v-if="this.$store.state.token == ''">
-            <router-link class="nav-item" to="/register">Register</router-link>
-          </div>
-          <div class="nav-item" v-if="this.$store.state.token == ''">
-            <router-link class="nav-item" to="/login">Login</router-link>
-          </div>
-          <div class="nav-item" v-if="this.$store.state.token != ''">
-            <router-link class="nav-item" to="/treng/edit">TrEng</router-link>
-          </div>
-          <div class="nav-item" v-if="this.$store.state.token != ''">
-            <router-link class="nav-item" to="/reader">Reader</router-link>
-          </div>
-          <div class="nav-item" v-if="this.$store.state.token != ''">
-            <router-link class="nav-item" to="/pack">Packs</router-link>
-          </div>
-          <div class="nav-item" v-if="this.$store.state.token != ''">
-            <router-link class="nav-item" to="/test">Test</router-link>
-          </div>
-        </div>
-      </nav>
-      <a class="cta" @click.prevent="logout" href="#">Logout</a>
-      <p class="menu cta" @click="overlayActive">Menu</p>
-    </header>
-    <div :class="overlayClassName">
-      <a class="close" @click="overlayClose">&times;</a>
-      <div class="overlay__content">
-        <div
-          @click="overlayClose"
-          class="nav-item"
-          v-if="this.$store.state.token == ''"
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark"
+      aria-label="Fifth navbar example"
+    >
+      <div class="container-fluid">
+        <div class="logoNavbar"></div>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarsExample05"
+          aria-controls="navbarsExample05"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <router-link class="nav-item" to="/register">Register</router-link>
-        </div>
-        <div
-          @click="overlayClose"
-          class="nav-item"
-          v-if="this.$store.state.token == ''"
-        >
-          <router-link class="nav-item" to="/login">Login</router-link>
-        </div>
-        <div
-          @click="overlayClose"
-          class="nav-item"
-          v-if="this.$store.state.token != ''"
-        >
-          <router-link class="nav-item" to="/treng/edit">TrEng</router-link>
-        </div>
-        <div
-          @click="overlayClose"
-          class="nav-item"
-          v-if="this.$store.state.token != ''"
-        >
-          <router-link class="nav-item" to="/reader">Reader</router-link>
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarsExample05">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item" v-if="this.$store.state.token == ''">
+              <router-link class="nav-link" to="/register"
+                >Register</router-link
+              >
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token == ''">
+              <router-link class="nav-link" to="/login">Login</router-link>
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/treng/edit">TrEng</router-link>
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/reader">Reader</router-link>
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/pack">Packs</router-link>
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/test">Test</router-link>
+            </li>
+          </ul>
+          <div v-if="this.$store.state.token != ''" class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="dropdown05"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+              >Username Dropdown</a
+            >
+            <ul class="dropdown-menu" aria-labelledby="dropdown05">
+              <li>
+                <router-link class="dropdown-item" to="/usersettings"
+                  >User Settings</router-link
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" @click.prevent="logout" href=""
+                  >Logout</a
+                >
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
-    </div>
+    </nav>
   </div>
 </template>
