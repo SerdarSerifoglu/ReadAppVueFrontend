@@ -90,7 +90,7 @@ export default {
               <router-link class="nav-link" to="/reader">Reader</router-link>
             </li>
             <li class="nav-item" v-if="this.$store.state.token != ''">
-              <router-link class="nav-link" to="/pack">Packs</router-link>
+              <router-link class="nav-link" to="/pack">My Packs</router-link>
             </li>
             <li class="nav-item" v-if="this.$store.state.token != ''">
               <router-link class="nav-link" to="/test">Test</router-link>
