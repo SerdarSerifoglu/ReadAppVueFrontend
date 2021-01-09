@@ -2,10 +2,9 @@
 .logoNavbar {
   width: 250px;
   height: 50px;
-  background-image: url("../assets/HardworderSWG.svg");
+  background-image: url("../assets/Hardworder-Logo-beyaz-kırmizi.svg");
   background-repeat: no-repeat;
   background-position: center;
-  background-color: #fcf1e3;
 }
 form {
   margin-block-end: 0em;
