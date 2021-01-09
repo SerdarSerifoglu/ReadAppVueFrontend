@@ -95,6 +95,11 @@ export default {
             <li class="nav-item" v-if="this.$store.state.token != ''">
               <router-link class="nav-link" to="/test">Test</router-link>
             </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/sharedPacks"
+                >Shared Packs</router-link
+              >
+            </li>
           </ul>
           <div v-if="this.$store.state.token != ''" class="nav-item dropdown">
             <a

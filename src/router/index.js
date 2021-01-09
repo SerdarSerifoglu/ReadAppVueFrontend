@@ -5,6 +5,7 @@ import Reader from "../views/Reader.vue";
 import PackAdd from "../views/pack/Add.vue";
 import Login from "../views/Login.vue";
 import Test from "../views/word/Add.vue";
+import SharedPacks from "../views/pack/SharedPacks.vue";
 import store from "../store/index.js";
 
 Vue.use(VueRouter);
@@ -45,6 +46,11 @@ const routes = [
     path: "/test",
     name: "Test",
     component: Test,
+  },
+  {
+    path: "/sharedPacks",
+    name: "SharedPacks",
+    component: SharedPacks,
   },
 ];
 
