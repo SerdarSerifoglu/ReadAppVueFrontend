@@ -11,7 +11,7 @@ td {
         <tr>
           <th scope="col">Title</th>
           <th scope="col">Description</th>
-          <th scope="col">Download</th>
+          <th scope="col">Copy Count</th>
           <th scope="col">Add To My Packages</th>
           <!-- <th scope="col">Edit</th> -->
         </tr>
@@ -20,24 +20,15 @@ td {
         <tr v-for="pack in packs" :key="pack._id">
           <td>{{ pack.title }}</td>
           <td>{{ pack.description }}</td>
-
-          <!-- <td>
-            <button
-              class="btn btn-sm btn-success"
-              @click="editButtonClick(pack._id, pack.title, pack.description)"
-              data-toggle="modal"
-              data-target=".bd-example-modal-sm"
-            >
-              Edit
-            </button>
-            <span> | </span>
+          <td>{{ pack.copyCount }}</td>
+          <td>
             <button
               class="btn btn-sm btn-danger"
-              @click="deleteButtonClick(pack._id)"
+              @click="addToMyPackages(pack._id)"
             >
-              Delete
+              Add
             </button>
-          </td> -->
+          </td>
         </tr>
       </tbody>
     </table>
@@ -63,6 +54,25 @@ export default {
         this.packs = response.data.data;
       })
       .catch((e) => console.log(e));
+  },
+  methods: {
+    addToMyPackages: async function (packId) {
+      await axios
+        .post(
+          "http://localhost:5000/api/pack/packCopy",
+          { packId: packId },
+          {
+            headers: {
+              Authorization: `Bearer: ${this.$store.state.token}`,
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          alert("That pack added you packeges.");
+        })
+        .catch((e) => console.log(e));
+    },
   },
 };
 </script>
