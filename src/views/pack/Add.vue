@@ -179,15 +179,7 @@
         //işlem uygulanıcak data varsa update yoksa add
         if (this.packData._id === undefined) {
           await axios
-            .post(
-              "http://localhost:5000/api/pack/add/",
-              { ...this.packData },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .post("/pack/add/", { ...this.packData })
             .then((response) => {
               console.log(response);
               alert("Pack added");
@@ -195,15 +187,7 @@
             .catch((e) => console.log(e));
         } else {
           await axios
-            .put(
-              "http://localhost:5000/api/pack/" + this.packData._id,
-              { ...this.packData },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .put("/pack/" + this.packData._id, { ...this.packData })
             .then((response) => {
               console.log(response);
               alert("Pack updated");
@@ -218,15 +202,7 @@
       },
       async shareButtonClick(packId) {
         await axios
-          .put(
-            "http://localhost:5000/api/pack/" + packId + "/shared",
-            {},
-            {
-              headers: {
-                Authorization: `Bearer: ${this.$store.state.token}`,
-              },
-            }
-          )
+          .put("/pack/" + packId + "/shared", {})
           .then((response) => {
             this.refreshList();
             console.log(response);
@@ -242,11 +218,7 @@
       },
       deleteButtonClick: async function(packId) {
         await axios
-          .delete("http://localhost:5000/api/pack/" + packId, {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          })
+          .delete("/pack/" + packId)
           .then((response) => {
             response;
             this.refreshList();
@@ -255,11 +227,7 @@
       },
       async refreshList() {
         await axios
-          .get("http://localhost:5000/api/pack/getAllUsersPacks", {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          })
+          .get("/pack/getAllUsersPacks")
           .then((response) => {
             this.packs = response.data.data;
           })
@@ -267,6 +235,8 @@
       },
     },
     async created() {
+      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
       await this.refreshList();
     },
   };

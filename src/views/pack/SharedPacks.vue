@@ -1,8 +1,8 @@
 <style scoped>
-th,
-td {
-  text-align: center;
-}
+  th,
+  td {
+    text-align: center;
+  }
 </style>
 <template>
   <div class="table-responsive">
@@ -22,10 +22,7 @@ td {
           <td>{{ pack.description }}</td>
           <td>{{ pack.copyCount }}</td>
           <td>
-            <button
-              class="btn btn-sm btn-danger"
-              @click="addToMyPackages(pack._id)"
-            >
+            <button class="btn btn-sm btn-danger" @click="addToMyPackages(pack._id)">
               Add
             </button>
           </td>
@@ -36,43 +33,33 @@ td {
 </template>
 
 <script>
-import axios from "axios";
-export default {
-  data() {
-    return {
-      packs: [],
-    };
-  },
-  async created() {
-    await axios
-      .get("http://localhost:5000/api/pack/getAllSharedPacks", {
-        headers: {
-          Authorization: `Bearer: ${this.$store.state.token}`,
-        },
-      })
-      .then((response) => {
-        this.packs = response.data.data;
-      })
-      .catch((e) => console.log(e));
-  },
-  methods: {
-    addToMyPackages: async function (packId) {
+  import axios from "axios";
+  export default {
+    data() {
+      return {
+        packs: [],
+      };
+    },
+    async created() {
+      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
       await axios
-        .post(
-          "http://localhost:5000/api/pack/packCopy",
-          { packId: packId },
-          {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          }
-        )
+        .get("/pack/getAllSharedPacks")
         .then((response) => {
-          console.log(response);
-          alert("That pack added you packeges.");
+          this.packs = response.data.data;
         })
         .catch((e) => console.log(e));
     },
-  },
-};
+    methods: {
+      addToMyPackages: async function(packId) {
+        await axios
+          .post("/pack/packCopy", { packId: packId })
+          .then((response) => {
+            console.log(response);
+            alert("That pack added you packeges.");
+          })
+          .catch((e) => console.log(e));
+      },
+    },
+  };
 </script>

@@ -4,7 +4,10 @@ import axios from "axios";
 import router from "../router/index.js";
 
 Vue.use(Vuex);
-
+axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+if (localStorage.getItem("token")) {
+  axios.defaults.headers.common["Authorization"] = `Bearer: ${localStorage.getItem("token")}`;
+}
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("token") || "",
@@ -25,11 +28,7 @@ export default new Vuex.Store({
       console.log("Token:" + token);
       if (token != "") {
         await axios
-          .get("http://localhost:5000/api/auth/tokentest", {
-            headers: {
-              Authorization: `Bearer: ${token}`,
-            },
-          })
+          .get("/auth/tokentest")
           .then((response) => {
             console.log(response.data);
             if (response.data.success === false) {
@@ -49,7 +48,7 @@ export default new Vuex.Store({
     },
     login({ commit }, authData) {
       axios
-        .post("http://localhost:5000/api/auth/login", { ...authData })
+        .post("/auth/login", { ...authData })
         .then((response) => {
           commit("setToken", response.data.access_token);
           router.push("/reader");

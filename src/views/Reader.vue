@@ -190,6 +190,7 @@
   import Combobox from "../components/Combobox.vue";
   import Input from "../components/Input.vue";
   import ArticleList from "../components/ArticleList.vue";
+
   export default {
     data() {
       return {
@@ -242,11 +243,7 @@
         this.wordData.mainWord = this.selectData;
 
         await axios
-          .get("http://localhost:5000/api/pack/" + this.selectedPack + "/word/" + this.selectData, {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          })
+          .get("/pack/" + this.selectedPack + "/word/" + this.selectData)
           .then((response) => {
             console.log(response.data.data[0]);
             if (response.data.data[0] != undefined) {
@@ -266,11 +263,7 @@
         this.openTextArea = false;
 
         await axios
-          .get("http://localhost:5000/api/pack/" + this.selectedPack + "/words", {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          })
+          .get("/pack/" + this.selectedPack + "/words")
           .then((response) => {
             this.words = response.data.data[0].words;
 
@@ -301,15 +294,7 @@
         //işlem uygulanıcak data varsa update yoksa add
         if (this.wordData._id === undefined) {
           await axios
-            .post(
-              "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
-              { ...this.wordData },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .post("/pack/" + this.selectedPack + "/word", { ...this.wordData })
             .then((response) => {
               console.log(response);
               alert("Word added");
@@ -317,15 +302,7 @@
             .catch((e) => console.log(e));
         } else {
           await axios
-            .put(
-              "http://localhost:5000/api/pack/" + this.selectedPack + "/word",
-              { ...this.wordData },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .put("/pack/" + this.selectedPack + "/word", { ...this.wordData })
             .then((response) => {
               console.log(response);
               alert("Word updated");
@@ -340,11 +317,7 @@
         }
         var articleModel = {};
         await axios
-          .get("http://localhost:5000/api/article/title/" + this.articleData.title, {
-            headers: {
-              Authorization: `Bearer: ${this.$store.state.token}`,
-            },
-          })
+          .get("/article/title/" + this.articleData.title)
           .then((response) => {
             if (response.data.data != []) {
               articleModel = response.data.data[0];
@@ -354,15 +327,7 @@
         console.log(articleModel);
         if (articleModel === undefined) {
           await axios
-            .post(
-              "http://localhost:5000/api/article/add/",
-              { ...this.articleData },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .post("/article/add/", { ...this.articleData })
             .then((response) => {
               console.log(response);
               alert("Article added");
@@ -371,15 +336,7 @@
         } else {
           articleModel = { ...articleModel, ...this.articleData };
           await axios
-            .put(
-              "http://localhost:5000/api/article/add/",
-              { ...articleModel },
-              {
-                headers: {
-                  Authorization: `Bearer: ${this.$store.state.token}`,
-                },
-              }
-            )
+            .put("/article/add/", { ...articleModel })
             .then((response) => {
               console.log(response);
               alert("Article saved");
@@ -389,13 +346,10 @@
       },
     },
     async created() {
-      console.log("Created Reader: " + this.$store.state.token);
+      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
       await axios
-        .get("http://localhost:5000/api/pack/forCbx", {
-          headers: {
-            Authorization: `Bearer: ${this.$store.state.token}`,
-          },
-        })
+        .get("/pack/forCbx")
         .then((response) => {
           this.packComboboxData = response.data.data;
         })
