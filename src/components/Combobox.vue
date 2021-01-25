@@ -27,11 +27,19 @@ export default {
     mainData: {
       type: Array,
     },
+    currentValue: {
+      type: String,
+    },
   },
   methods: {
     sendSelectedValue() {
       this.$emit("comboboxChange", this.selectedValue);
     },
+  },
+  mounted() {
+    if (this.selectedValue == "") {
+      this.selectedValue = this.currentValue;
+    }
   },
 };
 </script>
