@@ -25,8 +25,8 @@
     /* Position the tooltip */
     position: absolute;
     z-index: 1;
-    top: -25px;
-    left: 105%;
+    top: -40px;
+    left: 110%;
   }
 
   .tooltipS:hover .tooltiptext {
@@ -223,6 +223,7 @@
     data() {
       return {
         comboboxCurrentValue: this.$store.getters.getUserSettings.selectedPackId,
+        userSettingColor: this.$store.getters.getUserSettings.color ?? "FF2D00",
         modalDisplayValue: "none",
         modalDisplay: false,
         selectData: "",
@@ -308,7 +309,7 @@
               console.log(regx);
               this.readArticle = this.readArticle.replace(
                 regx,
-                `<a href="#" class="tooltipS">${element.mainWord}<span class="tooltiptext">${element.secondaryWord}</span></a>`
+                `<a href="#" class="tooltipS" style="color:#${this.userSettingColor}">${element.mainWord}<span class="tooltiptext">${element.secondaryWord}</span></a>`
               );
             });
           })
