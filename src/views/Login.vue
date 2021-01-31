@@ -62,6 +62,9 @@ input[type="password"]:focus {
   color: white;
   transition: 0.5s;
 }
+.forgotPass {
+  cursor: pointer;
+}
 </style>
 
 <template>
@@ -78,6 +81,7 @@ input[type="password"]:focus {
           v-model="loginData.password"
         />
       </div>
+      <div class="forgotPass" @click="goForgotPassword">Forgot my password</div>
       <div class="login-div">
         <button @click="submit">LOGIN</button>
       </div>
@@ -86,6 +90,8 @@ input[type="password"]:focus {
 </template>
 
 <script>
+import router from "../router/index.js";
+
 export default {
   data() {
     return {
@@ -105,6 +111,9 @@ export default {
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
+    },
+    goForgotPassword: function () {
+      router.push("/forgotpassword");
     },
   },
 };

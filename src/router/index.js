@@ -7,6 +7,8 @@ import Login from "../views/Login.vue";
 import Test from "../views/word/Add.vue";
 import SharedPacks from "../views/pack/SharedPacks.vue";
 import UserSettings from "../views/user/UserSettings.vue";
+import ForgotPassword from "../views/ForgotPassword.vue";
+import ResetPassword from "../views/ResetPassword.vue";
 import store from "../store/index.js";
 
 Vue.use(VueRouter);
@@ -23,6 +25,16 @@ const routes = [
     component: Register,
   },
   {
+    path: "/forgotPassword",
+    name: "ForgotPassword",
+    component: ForgotPassword,
+  },
+  {
+    path: "/resetPassword",
+    name: "ResetPassword",
+    component: ResetPassword,
+  },
+  {
     path: "/reader",
     name: "Reader",
     component: Reader,
@@ -32,7 +44,6 @@ const routes = [
         next();
       } else {
         await store.dispatch("initAuth");
-        console.log("attı router");
         next();
       }
     },
@@ -42,21 +53,53 @@ const routes = [
     name: "PackAdd",
     component: PackAdd,
     children: [{ path: "", component: PackAdd }],
+    async beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        await store.dispatch("initAuth");
+        next();
+      }
+    },
   },
   {
     path: "/test",
     name: "Test",
     component: Test,
+    async beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        await store.dispatch("initAuth");
+        next();
+      }
+    },
   },
   {
     path: "/sharedPacks",
     name: "SharedPacks",
     component: SharedPacks,
+    async beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        await store.dispatch("initAuth");
+        next();
+      }
+    },
   },
   {
     path: "/userSettings",
     name: "UserSettings",
     component: UserSettings,
+    async beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        await store.dispatch("initAuth");
+        next();
+      }
+    },
   },
 ];
 
