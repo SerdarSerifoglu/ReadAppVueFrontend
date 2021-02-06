@@ -41,7 +41,7 @@
                   btnDanger: pack.isShared,
                 }"
                 v-text="pack.isShared ? sharedButtonTextShareCancel : sharedButtonTextShare"
-                @click="shareButtonClick(pack._id)"
+                @click="shareButtonClick(pack._id, pack.isShared)"
               ></button>
             </td>
             <td>
@@ -141,6 +141,7 @@
   import axios from "axios";
   import { required } from "vuelidate/lib/validators";
   import Input from "../../components/Input";
+  import { basicAlertSwal } from "../../helpers/alertHelper.js";
 
   export default {
     data() {
@@ -181,18 +182,22 @@
           await axios
             .post("/pack/add/", { ...this.packData })
             .then((response) => {
+              basicAlertSwal("Pack added");
               console.log(response);
-              alert("Pack added");
             })
-            .catch((e) => console.log(e));
+            .catch((e) => {
+              basicAlertSwal(`Error - ${e}`, "error");
+            });
         } else {
           await axios
             .put("/pack/" + this.packData._id, { ...this.packData })
             .then((response) => {
               console.log(response);
-              alert("Pack updated");
+              basicAlertSwal("Pack updated");
             })
-            .catch((e) => console.log(e));
+            .catch((e) => {
+              basicAlertSwal(`Error - ${e}`, "error");
+            });
         }
         this.packData = {};
       },
@@ -200,13 +205,13 @@
         this.packData = {};
         this.modalClick();
       },
-      async shareButtonClick(packId) {
+      async shareButtonClick(packId, packIsShared) {
         await axios
           .put("/pack/" + packId + "/shared", {})
           .then((response) => {
             this.refreshList();
             console.log(response);
-            // this.packComboboxChange(this.selectedPack);
+            basicAlertSwal(packIsShared == true ? "Pack closed to share" : "Pack shared");
           })
           .catch((e) => console.log(e));
       },
