@@ -27,6 +27,7 @@ export default new Vuex.Store({
     clearToken(state) {
       state.token = "";
       localStorage.setItem("token", "");
+      router.push("/login");
     },
     setSelectedPack(state, data) {
       state.userSettings.color = data.wordColor;
@@ -54,6 +55,7 @@ export default new Vuex.Store({
             }
           })
           .catch((e) => {
+            router.push("/login");
             console.log(e);
           });
       } else {
