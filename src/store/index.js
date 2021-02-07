@@ -7,7 +7,9 @@ import createPersistedState from "vuex-persistedstate";
 Vue.use(Vuex);
 axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
 if (localStorage.getItem("token")) {
-  axios.defaults.headers.common["Authorization"] = `Bearer: ${localStorage.getItem("token")}`;
+  axios.defaults.headers.common[
+    "Authorization"
+  ] = `Bearer: ${localStorage.getItem("token")}`;
 }
 export default new Vuex.Store({
   plugins: [createPersistedState()],
@@ -45,7 +47,7 @@ export default new Vuex.Store({
       if (token != "") {
         await axios
           .get("/auth/tokentest")
-          .then((response) => {
+          .then(response => {
             console.log(response.data);
             if (response.data.success === false) {
               commit("clearToken");
@@ -54,7 +56,7 @@ export default new Vuex.Store({
               commit("setToken", token);
             }
           })
-          .catch((e) => {
+          .catch(e => {
             router.push("/login");
             console.log(e);
           });
@@ -66,11 +68,11 @@ export default new Vuex.Store({
     login({ commit }, authData) {
       axios
         .post("/auth/login", { ...authData })
-        .then((response) => {
+        .then(response => {
           commit("setToken", response.data.access_token);
           router.push("/reader");
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
     logout({ commit }) {
       commit("clearToken");
@@ -83,10 +85,10 @@ export default new Vuex.Store({
     setUserSettings({ commit }) {
       axios
         .get("/userSetting/getUserSettings")
-        .then((response) => {
+        .then(response => {
           commit("setSelectedPack", response.data.data);
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
   },
   getters: {

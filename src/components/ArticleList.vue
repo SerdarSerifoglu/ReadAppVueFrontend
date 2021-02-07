@@ -26,33 +26,35 @@
 </template>
 
 <script>
-  import axios from "axios";
-  export default {
-    data() {
-      return {
-        articles: [],
-      };
+import axios from "axios";
+export default {
+  data() {
+    return {
+      articles: [],
+    };
+  },
+  created: async function() {
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer: ${this.$store.state.token}`;
+    await axios
+      .get("/article/", {
+        headers: {
+          Authorization: `Bearer: ${this.$store.state.token}`,
+        },
+      })
+      .then(response => {
+        this.articles = response.data.data;
+        console.log(response.data.data);
+      })
+      .catch(e => console.log(e));
+  },
+  methods: {
+    sendArticle(article) {
+      console.log(article);
+      this.$emit("data", article);
     },
-    created: async function() {
-      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
-      await axios
-        .get("/article/", {
-          headers: {
-            Authorization: `Bearer: ${this.$store.state.token}`,
-          },
-        })
-        .then((response) => {
-          this.articles = response.data.data;
-          console.log(response.data.data);
-        })
-        .catch((e) => console.log(e));
-    },
-    methods: {
-      sendArticle(article) {
-        console.log(article);
-        this.$emit("data", article);
-      },
-    },
-  };
+  },
+};
 </script>

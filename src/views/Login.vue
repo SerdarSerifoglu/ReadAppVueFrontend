@@ -112,7 +112,7 @@ export default {
     readToken() {
       this.tokenNow = this.$store.state.token;
     },
-    goForgotPassword: function () {
+    goForgotPassword: function() {
       router.push("/forgotpassword");
     },
   },

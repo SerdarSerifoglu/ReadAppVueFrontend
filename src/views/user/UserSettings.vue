@@ -49,7 +49,7 @@ export default {
     "app-input": Input,
   },
   methods: {
-    insertOrUpdateWord: async function () {
+    insertOrUpdateWord: async function() {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.userSettingsId === "") {
         await axios
@@ -57,12 +57,12 @@ export default {
             selectedPackId: this.selectedPack,
             wordColor: this.wordColor,
           })
-          .then((response) => {
+          .then(response => {
             console.log(response);
             this.$store.dispatch("setUserSettings");
             alert("User Settings added");
           })
-          .catch((e) => console.log(e));
+          .catch(e => console.log(e));
       } else {
         await axios
           .put("/userSetting/", {
@@ -70,12 +70,12 @@ export default {
             selectedPackId: this.selectedPack,
             wordColor: this.wordColor,
           })
-          .then((response) => {
+          .then(response => {
             console.log(response);
             this.$store.dispatch("setUserSettings");
             alert("User Settings updated");
           })
-          .catch((e) => console.log(e));
+          .catch(e => console.log(e));
       }
     },
   },
@@ -86,11 +86,11 @@ export default {
     ] = `Bearer: ${this.$store.state.token}`;
     await axios
       .get("/pack/forCbx")
-      .then((response) => {
+      .then(response => {
         this.packComboboxData = response.data.data;
         console.log(this.packComboboxData);
       })
-      .catch((e) => {
+      .catch(e => {
         console.log(e.status, e.message);
         this.$store.dispatch("clearToken");
       });

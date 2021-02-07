@@ -43,8 +43,8 @@
       @click="resetPassword"
       :disabled="
         !$v.password.required ||
-        !$v.password.minLength ||
-        !$v.repeatPassword.sameAsPassword
+          !$v.password.minLength ||
+          !$v.repeatPassword.sameAsPassword
       "
     >
       Change My Password
@@ -77,7 +77,7 @@ export default {
     "app-input": Input,
   },
   methods: {
-    resetPassword: async function () {
+    resetPassword: async function() {
       var resetToken = this.$route.query.resetPasswordToken;
       console.log(this.$route.query);
       //düzenlenicek
@@ -85,11 +85,11 @@ export default {
         .put(`/auth/resetpassword?resetPasswordToken=${resetToken}`, {
           password: this.password,
         })
-        .then((response) => {
+        .then(response => {
           console.log(response);
           alert("Change you password");
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
   },
 };

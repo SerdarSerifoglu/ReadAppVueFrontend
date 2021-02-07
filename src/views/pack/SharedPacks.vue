@@ -1,8 +1,8 @@
 <style scoped>
-  th,
-  td {
-    text-align: center;
-  }
+th,
+td {
+  text-align: center;
+}
 </style>
 <template>
   <div class="table-responsive">
@@ -22,7 +22,10 @@
           <td>{{ pack.description }}</td>
           <td>{{ pack.copyCount }}</td>
           <td>
-            <button class="btn btn-sm btn-danger" @click="addToMyPackages(pack._id)">
+            <button
+              class="btn btn-sm btn-danger"
+              @click="addToMyPackages(pack._id)"
+            >
               Add
             </button>
           </td>
@@ -33,33 +36,35 @@
 </template>
 
 <script>
-  import axios from "axios";
-  export default {
-    data() {
-      return {
-        packs: [],
-      };
-    },
-    async created() {
-      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
+import axios from "axios";
+export default {
+  data() {
+    return {
+      packs: [],
+    };
+  },
+  async created() {
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer: ${this.$store.state.token}`;
+    await axios
+      .get("/pack/getAllSharedPacks")
+      .then(response => {
+        this.packs = response.data.data;
+      })
+      .catch(e => console.log(e));
+  },
+  methods: {
+    addToMyPackages: async function(packId) {
       await axios
-        .get("/pack/getAllSharedPacks")
-        .then((response) => {
-          this.packs = response.data.data;
+        .post("/pack/packCopy", { packId: packId })
+        .then(response => {
+          console.log(response);
+          alert("That pack added you packeges.");
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
-    methods: {
-      addToMyPackages: async function(packId) {
-        await axios
-          .post("/pack/packCopy", { packId: packId })
-          .then((response) => {
-            console.log(response);
-            alert("That pack added you packeges.");
-          })
-          .catch((e) => console.log(e));
-      },
-    },
-  };
+  },
+};
 </script>

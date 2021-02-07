@@ -53,14 +53,14 @@ export default {
     "app-input": Input,
   },
   methods: {
-    sendResetInstruction: async function () {
+    sendResetInstruction: async function() {
       await axios
         .post("/auth/forgotpassword", { email: this.email })
-        .then((response) => {
+        .then(response => {
           console.log(response);
           alert("Send Mail");
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
   },
 };

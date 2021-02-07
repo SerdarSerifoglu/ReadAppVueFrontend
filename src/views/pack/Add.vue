@@ -1,22 +1,26 @@
 <style scoped>
-  .btnSuccess {
-    color: #fff;
-    background-color: #28a745;
-    border-color: #28a745;
-  }
-  .btnDanger {
-    color: #fff;
-    background-color: #dc3545;
-    border-color: #dc3545;
-  }
-  th,
-  td {
-    text-align: center;
-  }
+.btnSuccess {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+.btnDanger {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+th,
+td {
+  text-align: center;
+}
 </style>
 <template>
   <div class="packAdd">
-    <button type="button" class="btn btn-primary" @click="addNewPackButtonClick()">
+    <button
+      type="button"
+      class="btn btn-primary"
+      @click="addNewPackButtonClick()"
+    >
       Add New Pack
     </button>
     <div class="table-responsive">
@@ -40,7 +44,11 @@
                   btnSuccess: !pack.isShared,
                   btnDanger: pack.isShared,
                 }"
-                v-text="pack.isShared ? sharedButtonTextShareCancel : sharedButtonTextShare"
+                v-text="
+                  pack.isShared
+                    ? sharedButtonTextShareCancel
+                    : sharedButtonTextShare
+                "
                 @click="shareButtonClick(pack._id, pack.isShared)"
               ></button>
             </td>
@@ -54,7 +62,10 @@
                 Edit
               </button>
               <span> | </span>
-              <button class="btn btn-sm btn-danger" @click="deleteButtonClick(pack._id)">
+              <button
+                class="btn btn-sm btn-danger"
+                @click="deleteButtonClick(pack._id)"
+              >
                 Delete
               </button>
             </td>
@@ -122,11 +133,16 @@
               ></app-input>
             </div>
             <div class="modal-footer">
-              <button class="btn btn-success center" @click="insertOrUpdateWord()" :disabled="$v.packData.$invalid">
+              <button
+                class="btn btn-success center"
+                @click="insertOrUpdateWord()"
+                :disabled="$v.packData.$invalid"
+              >
                 <i class="far fa-save" style="margin-right:3px;"></i> SAVE
               </button>
               <button class="btn btn-danger center" @click="modalClick()">
-                <i class="far fa-window-close" style="margin-right:3px;"></i> Close
+                <i class="far fa-window-close" style="margin-right:3px;"></i>
+                Close
               </button>
             </div>
           </div>
@@ -138,111 +154,115 @@
 </template>
 
 <script>
-  import axios from "axios";
-  import { required } from "vuelidate/lib/validators";
-  import Input from "../../components/Input";
-  import { basicAlertSwal } from "../../helpers/alertHelper.js";
+import axios from "axios";
+import { required } from "vuelidate/lib/validators";
+import Input from "../../components/Input";
+import { basicAlertSwal } from "../../helpers/alertHelper.js";
 
-  export default {
-    data() {
-      return {
-        modalDisplayValue: "none",
-        modalDisplay: false,
-        sharedButtonTextShare: "Share",
-        sharedButtonTextShareCancel: "Share Cancel",
-        packData: {
-          title: "",
-          description: "",
-        },
-        packs: [],
-      };
-    },
-    validations: {
+export default {
+  data() {
+    return {
+      modalDisplayValue: "none",
+      modalDisplay: false,
+      sharedButtonTextShare: "Share",
+      sharedButtonTextShareCancel: "Share Cancel",
       packData: {
-        title: { required },
-        description: { required },
+        title: "",
+        description: "",
       },
+      packs: [],
+    };
+  },
+  validations: {
+    packData: {
+      title: { required },
+      description: { required },
     },
-    name: "PackAdd",
-    components: {
-      "app-input": Input,
+  },
+  name: "PackAdd",
+  components: {
+    "app-input": Input,
+  },
+  methods: {
+    modalClick: function() {
+      this.modalDisplay = !this.modalDisplay;
+      if (this.modalDisplay) {
+        this.modalDisplayValue = "block";
+      } else {
+        this.modalDisplayValue = "none";
+      }
     },
-    methods: {
-      modalClick: function() {
-        this.modalDisplay = !this.modalDisplay;
-        if (this.modalDisplay) {
-          this.modalDisplayValue = "block";
-        } else {
-          this.modalDisplayValue = "none";
-        }
-      },
-      insertOrUpdateWord: async function() {
-        //işlem uygulanıcak data varsa update yoksa add
-        if (this.packData._id === undefined) {
-          await axios
-            .post("/pack/add/", { ...this.packData })
-            .then((response) => {
-              basicAlertSwal("Pack added");
-              console.log(response);
-            })
-            .catch((e) => {
-              basicAlertSwal(`Error - ${e}`, "error");
-            });
-        } else {
-          await axios
-            .put("/pack/" + this.packData._id, { ...this.packData })
-            .then((response) => {
-              console.log(response);
-              basicAlertSwal("Pack updated");
-            })
-            .catch((e) => {
-              basicAlertSwal(`Error - ${e}`, "error");
-            });
-        }
-        this.packData = {};
-      },
-      async addNewPackButtonClick() {
-        this.packData = {};
-        this.modalClick();
-      },
-      async shareButtonClick(packId, packIsShared) {
+    insertOrUpdateWord: async function() {
+      //işlem uygulanıcak data varsa update yoksa add
+      if (this.packData._id === undefined) {
         await axios
-          .put("/pack/" + packId + "/shared", {})
-          .then((response) => {
-            this.refreshList();
+          .post("/pack/add/", { ...this.packData })
+          .then(response => {
+            basicAlertSwal("Pack added");
             console.log(response);
-            basicAlertSwal(packIsShared == true ? "Pack closed to share" : "Pack shared");
           })
-          .catch((e) => console.log(e));
-      },
-      editButtonClick: async function(packId, packTitle, packDescription) {
-        this.packData._id = packId;
-        this.packData.title = packTitle;
-        this.packData.description = packDescription;
-        this.modalClick();
-      },
-      deleteButtonClick: async function(packId) {
+          .catch(e => {
+            basicAlertSwal(`Error - ${e}`, "error");
+          });
+      } else {
         await axios
-          .delete("/pack/" + packId)
-          .then((response) => {
-            response;
-            this.refreshList();
+          .put("/pack/" + this.packData._id, { ...this.packData })
+          .then(response => {
+            console.log(response);
+            basicAlertSwal("Pack updated");
           })
-          .catch((e) => console.log(e));
-      },
-      async refreshList() {
-        await axios
-          .get("/pack/getAllUsersPacks")
-          .then((response) => {
-            this.packs = response.data.data;
-          })
-          .catch((e) => console.log(e));
-      },
+          .catch(e => {
+            basicAlertSwal(`Error - ${e}`, "error");
+          });
+      }
+      this.packData = {};
     },
-    async created() {
-      axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-      axios.defaults.headers.common["Authorization"] = `Bearer: ${this.$store.state.token}`;
-      await this.refreshList();
+    async addNewPackButtonClick() {
+      this.packData = {};
+      this.modalClick();
     },
-  };
+    async shareButtonClick(packId, packIsShared) {
+      await axios
+        .put("/pack/" + packId + "/shared", {})
+        .then(response => {
+          this.refreshList();
+          console.log(response);
+          basicAlertSwal(
+            packIsShared == true ? "Pack closed to share" : "Pack shared"
+          );
+        })
+        .catch(e => console.log(e));
+    },
+    editButtonClick: async function(packId, packTitle, packDescription) {
+      this.packData._id = packId;
+      this.packData.title = packTitle;
+      this.packData.description = packDescription;
+      this.modalClick();
+    },
+    deleteButtonClick: async function(packId) {
+      await axios
+        .delete("/pack/" + packId)
+        .then(response => {
+          response;
+          this.refreshList();
+        })
+        .catch(e => console.log(e));
+    },
+    async refreshList() {
+      await axios
+        .get("/pack/getAllUsersPacks")
+        .then(response => {
+          this.packs = response.data.data;
+        })
+        .catch(e => console.log(e));
+    },
+  },
+  async created() {
+    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+    axios.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer: ${this.$store.state.token}`;
+    await this.refreshList();
+  },
+};
 </script>
