@@ -97,7 +97,12 @@ td {
               <button
                 type="button"
                 @click="modalClick()"
-                style="border: 0;padding: 3px;background-color:#fff; cursor: pointer;"
+                style="
+                  border: 0;
+                  padding: 3px;
+                  background-color: #fff;
+                  cursor: pointer;
+                "
               >
                 <span>X</span>
               </button>
@@ -135,13 +140,13 @@ td {
             <div class="modal-footer">
               <button
                 class="btn btn-success center"
-                @click="insertOrUpdateWord()"
+                @click="insertOrUpdatePack()"
                 :disabled="$v.packData.$invalid"
               >
-                <i class="far fa-save" style="margin-right:3px;"></i> SAVE
+                <i class="far fa-save" style="margin-right: 3px"></i> SAVE
               </button>
               <button class="btn btn-danger center" @click="modalClick()">
-                <i class="far fa-window-close" style="margin-right:3px;"></i>
+                <i class="far fa-window-close" style="margin-right: 3px"></i>
                 Close
               </button>
             </div>
@@ -150,6 +155,11 @@ td {
       </div>
     </div>
     <!-- Modal End -->
+    {{ $v }}
+    <test-list
+      @editClick="editButtonClick($event.id, $event.title, $event.description)"
+      :listData="packs"
+    ></test-list>
   </div>
 </template>
 
@@ -158,6 +168,7 @@ import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 import Input from "../../components/Input";
 import { basicAlertSwal } from "../../helpers/alertHelper.js";
+import TestList from "../../components/TestList.vue";
 
 export default {
   data() {
@@ -182,9 +193,10 @@ export default {
   name: "PackAdd",
   components: {
     "app-input": Input,
+    "test-list": TestList,
   },
   methods: {
-    modalClick: function() {
+    modalClick: function () {
       this.modalDisplay = !this.modalDisplay;
       if (this.modalDisplay) {
         this.modalDisplayValue = "block";
@@ -192,26 +204,30 @@ export default {
         this.modalDisplayValue = "none";
       }
     },
-    insertOrUpdateWord: async function() {
+    insertOrUpdatePack: async function () {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.packData._id === undefined) {
         await axios
           .post("/pack/add/", { ...this.packData })
-          .then(response => {
+          .then((response) => {
             basicAlertSwal("Pack added");
             console.log(response);
+            this.refreshList();
+            this.modalClick();
           })
-          .catch(e => {
+          .catch((e) => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       } else {
         await axios
           .put("/pack/" + this.packData._id, { ...this.packData })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             basicAlertSwal("Pack updated");
+            this.refreshList();
+            this.modalClick();
           })
-          .catch(e => {
+          .catch((e) => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       }
@@ -224,37 +240,41 @@ export default {
     async shareButtonClick(packId, packIsShared) {
       await axios
         .put("/pack/" + packId + "/shared", {})
-        .then(response => {
+        .then((response) => {
           this.refreshList();
           console.log(response);
           basicAlertSwal(
             packIsShared == true ? "Pack closed to share" : "Pack shared"
           );
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    editButtonClick: async function(packId, packTitle, packDescription) {
+    editButtonClick: async function (packId, packTitle, packDescription) {
+      console.log({ a: this.packData });
+      this.packData = {};
       this.packData._id = packId;
       this.packData.title = packTitle;
       this.packData.description = packDescription;
+      console.log({ b: this.packData });
       this.modalClick();
+      console.log({ c: this.packData });
     },
-    deleteButtonClick: async function(packId) {
+    deleteButtonClick: async function (packId) {
       await axios
         .delete("/pack/" + packId)
-        .then(response => {
+        .then((response) => {
           response;
           this.refreshList();
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
     async refreshList() {
       await axios
         .get("/pack/getAllUsersPacks")
-        .then(response => {
+        .then((response) => {
           this.packs = response.data.data;
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
   },
   async created() {

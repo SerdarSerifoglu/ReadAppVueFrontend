@@ -198,3 +198,25 @@ header {
   padding-left: 0;
   padding-right: 0;
 }
+
+/* table'lar içindeki butonlar için cssler */
+.button.is-text.listEditButton {
+  color: white;
+  background-color: orange;
+  border-radius: 10px;
+}
+.button.is-text.listEditButton:hover {
+  color: black;
+  background-color: orange;
+  border-radius: 10px;
+}
+.button.is-text.listDeleteButton {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listDeleteButton:hover {
+  color: black;
+  background-color: red;
+  border-radius: 10px;
+}
