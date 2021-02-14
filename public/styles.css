@@ -210,6 +210,17 @@ header {
   background-color: orange;
   border-radius: 10px;
 }
+.button.is-text.listEditButton:focus {
+  color: black;
+  background-color: orange;
+  border-radius: 10px;
+}
+.button.is-text.listEditButton:active {
+  color: black;
+  background-color: orange;
+  border-radius: 10px;
+}
+
 .button.is-text.listDeleteButton {
   color: white;
   background-color: red;
@@ -218,5 +229,57 @@ header {
 .button.is-text.listDeleteButton:hover {
   color: black;
   background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listDeleteButton:focus {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listDeleteButton:active {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+
+.button.is-text.listShareButton {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listShareButton:hover {
+  color: black;
+  background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listShareButton:focus {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+.button.is-text.listShareButton:active {
+  color: white;
+  background-color: red;
+  border-radius: 10px;
+}
+
+.button.is-text.listShareButtonGreen {
+  color: white;
+  background-color: green;
+  border-radius: 10px;
+}
+.button.is-text.listShareButtonGreen:hover {
+  color: black;
+  background-color: green;
+  border-radius: 10px;
+}
+.button.is-text.listShareButtonGreen:focus {
+  color: white;
+  background-color: green;
+  border-radius: 10px;
+}
+.button.is-text.listShareButtonGreen:active {
+  color: white;
+  background-color: green;
   border-radius: 10px;
 }

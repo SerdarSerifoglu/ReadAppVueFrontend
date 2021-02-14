@@ -23,56 +23,6 @@ td {
     >
       Add New Pack
     </button>
-    <div class="table-responsive">
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th scope="col">Title</th>
-            <th scope="col">Description</th>
-            <th scope="col">Share Status</th>
-            <th scope="col">Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="pack in packs" :key="pack._id">
-            <td>{{ pack.title }}</td>
-            <td>{{ pack.description }}</td>
-            <td>
-              <button
-                class="btn btn-sm"
-                v-bind:class="{
-                  btnSuccess: !pack.isShared,
-                  btnDanger: pack.isShared,
-                }"
-                v-text="
-                  pack.isShared
-                    ? sharedButtonTextShareCancel
-                    : sharedButtonTextShare
-                "
-                @click="shareButtonClick(pack._id, pack.isShared)"
-              ></button>
-            </td>
-            <td>
-              <button
-                class="btn btn-sm btn-success"
-                @click="editButtonClick(pack._id, pack.title, pack.description)"
-                data-toggle="modal"
-                data-target=".bd-example-modal-sm"
-              >
-                Edit
-              </button>
-              <span> | </span>
-              <button
-                class="btn btn-sm btn-danger"
-                @click="deleteButtonClick(pack._id)"
-              >
-                Delete
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
 
     <!-- Modal -->
 
@@ -155,11 +105,12 @@ td {
       </div>
     </div>
     <!-- Modal End -->
-    {{ $v }}
-    <test-list
+    <pack-list
       @editClick="editButtonClick($event.id, $event.title, $event.description)"
+      @shareClick="shareButtonClick($event.id, $event.isShared)"
+      @deleteClick="deleteButtonClick($event)"
       :listData="packs"
-    ></test-list>
+    ></pack-list>
   </div>
 </template>
 
@@ -168,15 +119,13 @@ import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 import Input from "../../components/Input";
 import { basicAlertSwal } from "../../helpers/alertHelper.js";
-import TestList from "../../components/TestList.vue";
+import PackList from "../../components/PackList.vue";
 
 export default {
   data() {
     return {
       modalDisplayValue: "none",
       modalDisplay: false,
-      sharedButtonTextShare: "Share",
-      sharedButtonTextShareCancel: "Share Cancel",
       packData: {
         title: "",
         description: "",
@@ -193,11 +142,12 @@ export default {
   name: "PackAdd",
   components: {
     "app-input": Input,
-    "test-list": TestList,
+    "pack-list": PackList,
   },
   methods: {
     modalClick: function () {
       this.modalDisplay = !this.modalDisplay;
+      this.packData = { ...this.packData };
       if (this.modalDisplay) {
         this.modalDisplayValue = "block";
       } else {
@@ -250,14 +200,10 @@ export default {
         .catch((e) => console.log(e));
     },
     editButtonClick: async function (packId, packTitle, packDescription) {
-      console.log({ a: this.packData });
-      this.packData = {};
       this.packData._id = packId;
       this.packData.title = packTitle;
       this.packData.description = packDescription;
-      console.log({ b: this.packData });
       this.modalClick();
-      console.log({ c: this.packData });
     },
     deleteButtonClick: async function (packId) {
       await axios

@@ -54,10 +54,20 @@
         />
         &nbsp;
         <b-button
+          v-if="!props.row.isShared"
           title="Shared this pack"
-          class="listDeleteButton"
+          class="listShareButtonGreen"
           type="is-text"
           icon-right="share"
+          @click="shareButtonClickInList(props.row._id, props.row.isShared)"
+        />
+        <b-button
+          v-else
+          title="Shared this pack"
+          class="listShareButton"
+          type="is-text"
+          icon-right="cancel"
+          @click="shareButtonClickInList(props.row._id, props.row.isShared)"
         />
         &nbsp;
 
@@ -66,6 +76,7 @@
           class="listDeleteButton"
           type="is-text"
           icon-right="delete"
+          @click="deleteButtonClickInList(props.row._id)"
         />
       </b-table-column>
     </b-table>
@@ -96,6 +107,15 @@ export default {
         title: title,
         description: description,
       });
+    },
+    shareButtonClickInList: function (id, isShared) {
+      this.$emit("shareClick", {
+        id: id,
+        isShared: isShared,
+      });
+    },
+    deleteButtonClickInList: function (id) {
+      this.$emit("deleteClick", id);
     },
   },
 };
