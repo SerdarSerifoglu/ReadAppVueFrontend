@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "buefy": "^0.9.4",
     "core-js": "^3.6.5",
     "dotenv": "^8.2.0",
     "sweetalert2": "^10.14.0",
