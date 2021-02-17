@@ -1,8 +1,10 @@
 <template>
   <div>
     <app-combobox
+      classValue="col-sm-6"
       :mainData="packComboboxData"
       @comboboxChange="packComboboxChange($event)"
+      :currentValue="comboboxCurrentValue"
     />
     <button class="btn btn-primary btn-md" @click="newWord()">
       <span>
@@ -10,81 +12,99 @@
       </span>
       Add Word
     </button>
-    <div class="addWord">
-      <app-input
-        inputId="mainWord"
-        label="Main Word"
-        divClass="col-md-6 col-xs-12"
-        v-model="wordData.mainWord"
-        :dataValue="wordData.mainWord"
-      ></app-input>
-      <app-input
-        inputId="secondaryWord"
-        label="Secondary Word"
-        divClass="col-md-6 col-xs-12"
-        v-model="wordData.secondaryWord"
-        :dataValue="wordData.secondaryWord"
-      ></app-input>
-      <app-input
-        inputId="mainWordAF"
-        label="Main Word A.F."
-        divClass="col-md-6 col-xs-12"
-        v-model="wordData.mainWordAF"
-        :dataValue="wordData.mainWordAF"
-      ></app-input>
-      <app-input
-        inputId="secondaryWordAF"
-        label="Secondary Word A.F."
-        divClass="col-md-6 col-xs-12"
-        v-model="wordData.secondaryWordAF"
-        :dataValue="wordData.secondaryWordAF"
-      ></app-input>
-    </div>
-    <button
-      class="btn btn-primary btn-md"
-      @click="wordData._id != undefined ? updateWord() : saveWord()"
+
+    <word-list
+      :listData="words"
+      @editClick="
+        editButtonClick($event.id, $event.mainWord, $event.secondaryWord)
+      "
+      @deleteClick="deleteButtonClick($event)"
+    ></word-list>
+
+    <!-- Modal -->
+
+    <div
+      class="modal fade bd-example-modal-sm"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="mySmallModalLabel"
+      aria-hidden="true"
+      v-bind:class="{
+        show: modalDisplay,
+      }"
+      v-bind:style="{
+        display: modalDisplayValue,
+      }"
     >
-      <span>
-        <i class="fas fa-plus"></i>
-      </span>
-      Save
-    </button>
-    <div class="table-responsive">
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th scope="col">Main</th>
-            <th scope="col">Secondary</th>
-            <th scope="col">MainAF</th>
-            <th scope="col">SecondaryAF</th>
-            <th scope="col">Edit</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="word in words" :key="word._id">
-            <td>{{ word.mainWord }}</td>
-            <td>{{ word.secondaryWord }}</td>
-            <td>{{ word.mainWordAF }}</td>
-            <td>{{ word.secondaryWordAF }}</td>
-            <td>
+      <div class="modal-dialog" id="addPackModal">
+        <div class="modal-content">
+          <div style="margin: 2rem">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">Save Word</h5>
               <button
-                class="btn btn-success"
-                @click="editButtonClick(word._id)"
+                type="button"
+                @click="modalClick()"
+                style="
+                  border: 0;
+                  padding: 3px;
+                  background-color: #fff;
+                  cursor: pointer;
+                "
               >
-                Edit
+                <span>X</span>
               </button>
-              <span> | </span>
+            </div>
+            <div class="modal-body">
+              <div class="addWord">
+                <app-input
+                  @input="$v.wordData.mainWord.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.wordData.mainWord.$error,
+                  }"
+                  inputId="mainWord"
+                  label="Main Word"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="wordData.mainWord"
+                  :dataValue="wordData.mainWord"
+                  :attention1="$v.wordData.mainWord.required"
+                  attention1Text="Main word is required !"
+                ></app-input>
+                <app-input
+                  @input="$v.wordData.secondaryWord.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.wordData.secondaryWord.$error,
+                  }"
+                  inputId="secondaryWord"
+                  label="Secondary Word"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="wordData.secondaryWord"
+                  :dataValue="wordData.secondaryWord"
+                  :attention1="$v.wordData.secondaryWord.required"
+                  attention1Text="Secondary word is required !"
+                ></app-input>
+              </div>
+            </div>
+            <div class="modal-footer">
               <button
-                class="btn btn-danger"
-                @click="deleteButtonClick(word._id)"
+                class="btn btn-success center"
+                @click="wordData._id != undefined ? updateWord() : saveWord()"
+                :disabled="$v.wordData.$invalid"
               >
-                Delete
+                <i class="far fa-save" style="margin-right: 3px"></i> SAVE
               </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+              <button class="btn btn-danger center" @click="modalClick()">
+                <i class="far fa-window-close" style="margin-right: 3px"></i>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- Modal End -->
   </div>
 </template>
 
@@ -92,89 +112,115 @@
 import axios from "axios";
 import Input from "../../components/Input.vue";
 import Combobox from "../../components/Combobox.vue";
+import { required } from "vuelidate/lib/validators";
+import WordList from "../../components/WordList.vue";
+
 export default {
   data() {
     return {
+      modalDisplay: false,
+      modalDisplayValue: "none",
       selectedPack: "",
       packComboboxData: [],
       words: [],
       wordData: {
-        mainWord: null,
-        mainWordAF: null,
-        secondaryWord: null,
-        secondaryWordAF: null,
+        mainWord: "",
+        secondaryWord: "",
       },
     };
+  },
+  validations: {
+    wordData: {
+      mainWord: { required },
+      secondaryWord: { required },
+    },
   },
   components: {
     "app-input": Input,
     "app-combobox": Combobox,
+    "word-list": WordList,
   },
   methods: {
-    packComboboxChange: async function(event) {
+    modalClick: function () {
+      this.modalDisplay = !this.modalDisplay;
+      this.wordData = { ...this.wordData };
+      if (this.modalDisplay) {
+        this.modalDisplayValue = "block";
+      } else {
+        this.modalDisplayValue = "none";
+      }
+    },
+    packComboboxChange: async function (event) {
       this.selectedPack = event;
       await axios
         .get("/pack/" + this.selectedPack + "/words")
-        .then(response => {
+        .then((response) => {
           this.words = response.data.data[0].words;
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    editButtonClick: async function(wordId) {
-      await axios
-        .get("/pack/" + this.selectedPack + "/words/" + wordId)
-        .then(response => {
-          this.wordData = response.data.data[0];
-        })
-        .catch(e => console.log(e));
+    editButtonClick: async function (wordId, mainWord, secondaryWord) {
+      this.wordData._id = wordId;
+      this.wordData.mainWord = mainWord;
+      this.wordData.secondaryWord = secondaryWord;
+      this.modalClick();
     },
-    deleteButtonClick: async function(wordId) {
+    deleteButtonClick: async function (wordId) {
       await axios
         .delete("/pack/" + this.selectedPack + "/word/" + wordId)
-        .then(response => {
+        .then((response) => {
           response;
           this.packComboboxChange(this.selectedPack);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    saveWord: async function() {
+    saveWord: async function () {
       await axios
         .post("/pack/" + this.selectedPack + "/word", { ...this.wordData })
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    updateWord: async function() {
+    updateWord: async function () {
       await axios
         .put("/pack/" + this.selectedPack + "/word", { ...this.wordData })
-        .then(response => {
+        .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    newWord: function() {
-      this.wordData = {
-        mainWord: null,
-        mainWordAF: null,
-        secondaryWord: null,
-        secondaryWordAF: null,
-      };
+    newWord: function () {
+      this.wordData = {};
+      this.modalClick();
+    },
+    async refreshList() {
+      await axios
+        .get("/pack/" + this.selectedPack + "/words")
+        .then((response) => {
+          this.words = response.data.data[0].words;
+        })
+        .catch((e) => console.log(e));
     },
   },
   async created() {
+    this.comboboxCurrentValue = this.$store.getters.getUserSettings.selectedPackId;
+    if (this.selectedPack === "") {
+      this.selectedPack = this.comboboxCurrentValue;
+    }
     axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
     axios.defaults.headers.common[
       "Authorization"
     ] = `Bearer: ${this.$store.state.token}`;
     await axios
       .get("/pack/forCbx")
-      .then(response => {
+      .then((response) => {
         this.packComboboxData = response.data.data;
       })
-      .catch(e => console.log(e));
+      .catch((e) => console.log(e));
+    await this.refreshList();
   },
 };
 </script>
