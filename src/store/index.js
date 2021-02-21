@@ -20,6 +20,7 @@ export default new Vuex.Store({
       color: "",
       selectedPackId: "",
     },
+    isLoading: false,
   },
   mutations: {
     setToken(state, token) {
@@ -39,8 +40,20 @@ export default new Vuex.Store({
     getUserSettings(state) {
       state.userSettings;
     },
+    openLoading(state) {
+      state.isLoading = true;
+    },
+    closeLoading(state) {
+      state.isLoading = false;
+    },
   },
   actions: {
+    openLoading({ commit }) {
+      commit("openLoading");
+    },
+    closeLoading({ commit }) {
+      commit("closeLoading");
+    },
     async initAuth({ commit }) {
       let token = localStorage.getItem("token");
       console.log("Token:" + token);
@@ -98,6 +111,9 @@ export default new Vuex.Store({
     },
     getUserSettings(state) {
       return state.userSettings;
+    },
+    getLoadingStatus(state) {
+      return state.isLoading;
     },
   },
   modules: {},

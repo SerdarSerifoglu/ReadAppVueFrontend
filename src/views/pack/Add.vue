@@ -111,6 +111,7 @@ td {
       @deleteClick="deleteButtonClick($event)"
       :listData="packs"
     ></pack-list>
+    <loading></loading>
   </div>
 </template>
 
@@ -120,7 +121,29 @@ import { required } from "vuelidate/lib/validators";
 import Input from "../../components/Input";
 import { basicAlertSwal } from "../../helpers/alertHelper.js";
 import PackList from "../../components/PackList.vue";
+import Loading from "../../components/Loading.vue";
+import store from "../../store/index.js";
 
+axios.interceptors.request.use(
+  function (config) {
+    store.dispatch("openLoading");
+    return config;
+  },
+  function (error) {
+    store.dispatch("closeLoading");
+    return Promise.reject(error);
+  }
+);
+axios.interceptors.response.use(
+  function (response) {
+    store.dispatch("closeLoading");
+    return response;
+  },
+  function (error) {
+    store.dispatch("closeLoading");
+    return Promise.reject(error);
+  }
+);
 export default {
   data() {
     return {
@@ -143,6 +166,7 @@ export default {
   components: {
     "app-input": Input,
     "pack-list": PackList,
+    loading: Loading,
   },
   methods: {
     modalClick: function () {
@@ -220,7 +244,9 @@ export default {
         .then((response) => {
           this.packs = response.data.data;
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          console.log(e);
+        });
     },
   },
   async created() {
