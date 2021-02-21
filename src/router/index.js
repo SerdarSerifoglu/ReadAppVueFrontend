@@ -4,12 +4,12 @@ import Register from "../views/Register.vue";
 import Reader from "../views/Reader.vue";
 import PackAdd from "../views/pack/Add.vue";
 import Login from "../views/Login.vue";
-import Test from "../views/word/Add.vue";
+import Word from "../views/word/Add.vue";
 import SharedPacks from "../views/pack/SharedPacks.vue";
 import UserSettings from "../views/user/UserSettings.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import ResetPassword from "../views/ResetPassword.vue";
-import PackWord from "../views/PackWord.vue";
+// import PackWord from "../views/PackWord.vue";
 
 import store from "../store/index.js";
 
@@ -65,9 +65,9 @@ const routes = [
     },
   },
   {
-    path: "/test",
-    name: "Test",
-    component: Test,
+    path: "/words",
+    name: "Word",
+    component: Word,
     async beforeEnter(to, from, next) {
       if (store.getters.isAuthenticated) {
         next();
@@ -77,19 +77,19 @@ const routes = [
       }
     },
   },
-  {
-    path: "/packword",
-    name: "PackWord",
-    component: PackWord,
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
-  },
+  // {
+  //   path: "/packword",
+  //   name: "PackWord",
+  //   component: PackWord,
+  //   async beforeEnter(to, from, next) {
+  //     if (store.getters.isAuthenticated) {
+  //       next();
+  //     } else {
+  //       await store.dispatch("initAuth");
+  //       next();
+  //     }
+  //   },
+  // },
   {
     path: "/sharedPacks",
     name: "SharedPacks",
