@@ -40,13 +40,13 @@ export default {
     };
   },
   methods: {
-    overlayActive: function() {
+    overlayActive: function () {
       this.overlayClassName = "overlay overlay--active";
     },
-    overlayClose: function() {
+    overlayClose: function () {
       this.overlayClassName = "overlay";
     },
-    logout: function() {
+    logout: function () {
       this.$store.dispatch("logout");
     },
   },
@@ -93,6 +93,11 @@ export default {
             </li>
             <li class="nav-item" v-if="this.$store.state.token != ''">
               <router-link class="nav-link" to="/test">Test</router-link>
+            </li>
+            <li class="nav-item" v-if="this.$store.state.token != ''">
+              <router-link class="nav-link" to="/packword"
+                >PackWord</router-link
+              >
             </li>
             <li class="nav-item" v-if="this.$store.state.token != ''">
               <router-link class="nav-link" to="/sharedPacks"

@@ -9,6 +9,8 @@ import SharedPacks from "../views/pack/SharedPacks.vue";
 import UserSettings from "../views/user/UserSettings.vue";
 import ForgotPassword from "../views/ForgotPassword.vue";
 import ResetPassword from "../views/ResetPassword.vue";
+import PackWord from "../views/PackWord.vue";
+
 import store from "../store/index.js";
 
 Vue.use(VueRouter);
@@ -66,6 +68,19 @@ const routes = [
     path: "/test",
     name: "Test",
     component: Test,
+    async beforeEnter(to, from, next) {
+      if (store.getters.isAuthenticated) {
+        next();
+      } else {
+        await store.dispatch("initAuth");
+        next();
+      }
+    },
+  },
+  {
+    path: "/packword",
+    name: "PackWord",
+    component: PackWord,
     async beforeEnter(to, from, next) {
       if (store.getters.isAuthenticated) {
         next();

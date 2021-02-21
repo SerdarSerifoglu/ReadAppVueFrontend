@@ -51,6 +51,7 @@
           "
           type="is-text"
           icon-right="pencil"
+          size="is-small"
         />
         &nbsp;
         <b-button
@@ -59,6 +60,7 @@
           class="listShareButtonGreen"
           type="is-text"
           icon-right="share"
+          size="is-small"
           @click="shareButtonClickInList(props.row._id, props.row.isShared)"
         />
         <b-button
@@ -67,6 +69,7 @@
           class="listShareButton"
           type="is-text"
           icon-right="cancel"
+          size="is-small"
           @click="shareButtonClickInList(props.row._id, props.row.isShared)"
         />
         &nbsp;
@@ -76,6 +79,7 @@
           class="listDeleteButton"
           type="is-text"
           icon-right="delete"
+          size="is-small"
           @click="deleteButtonClickInList(props.row._id)"
         />
       </b-table-column>
@@ -92,7 +96,7 @@ export default {
       data: [],
       columnsVisible: {
         title: { title: "Name", display: true },
-        description: { title: "Description", display: true },
+        description: { title: "Description", display: false },
         cleared: { title: "Actions", display: true },
       },
       sortIcon: "arrow-up",
