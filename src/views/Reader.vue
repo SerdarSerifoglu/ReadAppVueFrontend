@@ -120,7 +120,9 @@ span {
         <button
           @click="readButtonClick"
           class="btn btn-success btn-lg"
-          :disabled="!$v.selectedPack.required"
+          :disabled="
+            !$v.selectedPack.required || !$v.articleData.article.required
+          "
         >
           READ
         </button>
@@ -298,15 +300,15 @@ export default {
 
       await axios
         .get("/pack/" + this.selectedPack + "/word/" + this.selectData)
-        .then(response => {
+        .then((response) => {
           console.log(response.data.data[0]);
           if (response.data.data[0] != undefined) {
             this.wordData = response.data.data[0];
           }
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    readButtonClick: async function() {
+    readButtonClick: async function () {
       if (this.selectedPack == "") {
         alert("Please select pack to read");
         return;
@@ -318,15 +320,15 @@ export default {
 
       await axios
         .get("/pack/" + this.selectedPack + "/words")
-        .then(response => {
+        .then((response) => {
           this.words = response.data.data[0].words;
 
-          this.words.sort(function(a, b) {
+          this.words.sort(function (a, b) {
             return b.mainWord.length - a.mainWord.length;
           });
           console.log(this.words);
           this.readArticle = this.articleData.article;
-          this.words.forEach(element => {
+          this.words.forEach((element) => {
             var regx = new RegExp(
               "(\\b" + element.mainWord + "\\b)(?!^>)(?![^<>]*<*>)",
               "gi"
@@ -338,7 +340,7 @@ export default {
             );
           });
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
     clickNewArticleButton() {
       this.clickedReadButton = false;
@@ -347,61 +349,61 @@ export default {
     readToken() {
       this.tokenNow = this.$store.state.token;
     },
-    insertOrUpdateWord: async function() {
+    insertOrUpdateWord: async function () {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.wordData._id === undefined) {
         await axios
           .post("/pack/" + this.selectedPack + "/word", { ...this.wordData })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             alert("Word added");
           })
-          .catch(e => console.log(e));
+          .catch((e) => console.log(e));
       } else {
         await axios
           .put("/pack/" + this.selectedPack + "/word", { ...this.wordData })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             alert("Word updated");
           })
-          .catch(e => console.log(e));
+          .catch((e) => console.log(e));
       }
       this.wordData = {};
     },
-    saveArticle: async function() {
+    saveArticle: async function () {
       if (this.articleData.title === "") {
         return;
       }
       var articleModel = {};
       await axios
         .get("/article/title/" + this.articleData.title)
-        .then(response => {
+        .then((response) => {
           if (response.data.data != []) {
             articleModel = response.data.data[0];
           }
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
       console.log(articleModel);
       if (articleModel === undefined) {
         await axios
           .post("/article/add/", { ...this.articleData })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             alert("Article added");
           })
-          .catch(e => console.log(e));
+          .catch((e) => console.log(e));
       } else {
         articleModel = { ...articleModel, ...this.articleData };
         await axios
           .put("/article/add/", { ...articleModel })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             alert("Article saved");
           })
-          .catch(e => console.log(e));
+          .catch((e) => console.log(e));
       }
     },
-    modalClick: function() {
+    modalClick: function () {
       this.modalDisplay = !this.modalDisplay;
       if (this.modalDisplay) {
         this.modalDisplayValue = "block";
@@ -424,10 +426,10 @@ export default {
     ] = `Bearer: ${this.$store.state.token}`;
     await axios
       .get("/pack/forCbx")
-      .then(response => {
+      .then((response) => {
         this.packComboboxData = response.data.data;
       })
-      .catch(e => {
+      .catch((e) => {
         console.log(e.status, e.message);
         this.$store.dispatch("clearToken");
       });
