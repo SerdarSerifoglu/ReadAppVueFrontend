@@ -1,6 +1,4 @@
 <style scoped>
-.userSettings {
-}
 </style>
 <template>
   <div class="userSettings">
