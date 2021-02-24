@@ -233,15 +233,19 @@ span {
     <p>{{ wordData }}</p>
 
     <ArticleList @data="articleData = $event"></ArticleList>
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import baseAxiosService from "../helpers/axiosHelper.js";
+import axiosNonLoadingService from "../helpers/axiosHelperNonLoading.js";
 import { required } from "vuelidate/lib/validators";
 import Combobox from "../components/Combobox.vue";
 import Input from "../components/Input.vue";
 import ArticleList from "../components/ArticleList.vue";
+import { basicAlertSwal } from "../helpers/alertHelper.js";
+import Loading from "../components/Loading.vue";
 
 export default {
   data() {
@@ -288,6 +292,7 @@ export default {
     "app-combobox": Combobox,
     "app-input": Input,
     ArticleList,
+    loading: Loading,
   },
   methods: {
     async selectWord() {
@@ -298,7 +303,7 @@ export default {
       this.wordData = {};
       this.wordData.mainWord = this.selectData;
 
-      await axios
+      await axiosNonLoadingService
         .get("/pack/" + this.selectedPack + "/word/" + this.selectData)
         .then((response) => {
           console.log(response.data.data[0]);
@@ -318,7 +323,7 @@ export default {
       this.clickedReadButton = true;
       this.openTextArea = false;
 
-      await axios
+      await baseAxiosService
         .get("/pack/" + this.selectedPack + "/words")
         .then((response) => {
           this.words = response.data.data[0].words;
@@ -352,19 +357,19 @@ export default {
     insertOrUpdateWord: async function () {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.wordData._id === undefined) {
-        await axios
+        await baseAxiosService
           .post("/pack/" + this.selectedPack + "/word", { ...this.wordData })
           .then((response) => {
             console.log(response);
-            alert("Word added");
+            basicAlertSwal("Word added");
           })
           .catch((e) => console.log(e));
       } else {
-        await axios
+        await baseAxiosService
           .put("/pack/" + this.selectedPack + "/word", { ...this.wordData })
           .then((response) => {
             console.log(response);
-            alert("Word updated");
+            basicAlertSwal("Word updated");
           })
           .catch((e) => console.log(e));
       }
@@ -375,7 +380,7 @@ export default {
         return;
       }
       var articleModel = {};
-      await axios
+      await axiosNonLoadingService
         .get("/article/title/" + this.articleData.title)
         .then((response) => {
           if (response.data.data != []) {
@@ -385,20 +390,20 @@ export default {
         .catch((e) => console.log(e));
       console.log(articleModel);
       if (articleModel === undefined) {
-        await axios
+        await baseAxiosService
           .post("/article/add/", { ...this.articleData })
           .then((response) => {
             console.log(response);
-            alert("Article added");
+            basicAlertSwal("Article added");
           })
           .catch((e) => console.log(e));
       } else {
         articleModel = { ...articleModel, ...this.articleData };
-        await axios
+        await baseAxiosService
           .put("/article/add/", { ...articleModel })
           .then((response) => {
             console.log(response);
-            alert("Article saved");
+            basicAlertSwal("Article updated");
           })
           .catch((e) => console.log(e));
       }
@@ -420,11 +425,8 @@ export default {
     if (this.selectedPack === "") {
       this.selectedPack = this.comboboxCurrentValue;
     }
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
-    await axios
+
+    await axiosNonLoadingService
       .get("/pack/forCbx")
       .then((response) => {
         this.packComboboxData = response.data.data;
