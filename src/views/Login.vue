@@ -86,12 +86,15 @@ input[type="password"]:focus {
         <button @click="submit">LOGIN</button>
       </div>
     </div>
+    <loading></loading>
   </div>
 </template>
 
 <script>
 import router from "../router/index.js";
 import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
+import Loading from "../components/Loading.vue";
+
 export default {
   data() {
     return {
@@ -103,7 +106,9 @@ export default {
     };
   },
   name: "Login",
-  components: {},
+  components: {
+    loading: Loading,
+  },
   methods: {
     submit() {
       axiosNonTokenService
