@@ -6,26 +6,24 @@ const axiosNonLoadingService = axios.create();
 axiosNonLoadingService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
 axiosNonLoadingService.defaults.headers.common[
   "Authorization"
-] = `Bearer: ${store.state.token}`;
+] = `Bearer: ${store.getters.getStateToken}`;
 
 axiosNonLoadingService.interceptors.request.use(
   function(config) {
-    // store.dispatch("openLoading");
-    console.log({ "response Serdar REQUEST NONLOADING": "" });
-
     return config;
   },
   function(error) {
-    // store.dispatch("closeLoading");
     return Promise.reject(error);
   }
 );
 axiosNonLoadingService.interceptors.response.use(
   function(response) {
-    console.log({ "response Serdar RESPONSE:NONLOADING": response.status });
     return response;
   },
   function(error) {
+    if (error.response.status === 401) {
+      this.$store.dispatch("logout");
+    }
     return Promise.reject(error);
   }
 );
