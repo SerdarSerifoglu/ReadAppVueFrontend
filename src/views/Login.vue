@@ -91,7 +91,7 @@ input[type="password"]:focus {
 
 <script>
 import router from "../router/index.js";
-
+import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
 export default {
   data() {
     return {
@@ -106,8 +106,13 @@ export default {
   components: {},
   methods: {
     submit() {
-      //store'daki actionları component üzerinden erişmek için dispatch kullanılır.
-      this.$store.dispatch("login", { ...this.loginData });
+      axiosNonTokenService
+        .post("/auth/login", { ...this.loginData })
+        .then(response => {
+          this.$store.commit("setToken", response.data.access_token);
+          router.push("/reader");
+        })
+        .catch(e => console.log(e));
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
@@ -115,6 +120,9 @@ export default {
     goForgotPassword: function() {
       router.push("/forgotpassword");
     },
+  },
+  beforeCreate: function() {
+    localStorage.removeItem("vuex");
   },
 };
 </script>
