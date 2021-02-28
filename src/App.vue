@@ -11,9 +11,6 @@ export default {
   components: {
     Navbar,
   },
-  // created() {
-  //   this.$store.dispatch("initAuth");
-  // },
 };
 </script>
 
