@@ -116,34 +116,13 @@ td {
 </template>
 
 <script>
-import axios from "axios";
 import { required } from "vuelidate/lib/validators";
 import Input from "../../components/Input";
 import { basicAlertSwal } from "../../helpers/alertHelper.js";
 import PackList from "../../components/PackList.vue";
 import Loading from "../../components/Loading.vue";
-import store from "../../store/index.js";
+import axiosService from "../../helpers/axiosHelper.js";
 
-axios.interceptors.request.use(
-  function (config) {
-    store.dispatch("openLoading");
-    return config;
-  },
-  function (error) {
-    store.dispatch("closeLoading");
-    return Promise.reject(error);
-  }
-);
-axios.interceptors.response.use(
-  function (response) {
-    store.dispatch("closeLoading");
-    return response;
-  },
-  function (error) {
-    store.dispatch("closeLoading");
-    return Promise.reject(error);
-  }
-);
 export default {
   data() {
     return {
@@ -169,7 +148,7 @@ export default {
     loading: Loading,
   },
   methods: {
-    modalClick: function () {
+    modalClick: function() {
       this.modalDisplay = !this.modalDisplay;
       this.packData = { ...this.packData };
       if (this.modalDisplay) {
@@ -178,30 +157,30 @@ export default {
         this.modalDisplayValue = "none";
       }
     },
-    insertOrUpdatePack: async function () {
+    insertOrUpdatePack: async function() {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.packData._id === undefined) {
-        await axios
+        await axiosService
           .post("/pack/add/", { ...this.packData })
-          .then((response) => {
+          .then(response => {
             basicAlertSwal("Pack added");
             console.log(response);
             this.refreshList();
             this.modalClick();
           })
-          .catch((e) => {
+          .catch(e => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       } else {
-        await axios
+        await axiosService
           .put("/pack/" + this.packData._id, { ...this.packData })
-          .then((response) => {
+          .then(response => {
             console.log(response);
             basicAlertSwal("Pack updated");
             this.refreshList();
             this.modalClick();
           })
-          .catch((e) => {
+          .catch(e => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       }
@@ -212,48 +191,45 @@ export default {
       this.modalClick();
     },
     async shareButtonClick(packId, packIsShared) {
-      await axios
+      await axiosService
         .put("/pack/" + packId + "/shared", {})
-        .then((response) => {
+        .then(response => {
           this.refreshList();
           console.log(response);
           basicAlertSwal(
             packIsShared == true ? "Pack closed to share" : "Pack shared"
           );
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
-    editButtonClick: async function (packId, packTitle, packDescription) {
+    editButtonClick: async function(packId, packTitle, packDescription) {
       this.packData._id = packId;
       this.packData.title = packTitle;
       this.packData.description = packDescription;
       this.modalClick();
     },
-    deleteButtonClick: async function (packId) {
-      await axios
+    deleteButtonClick: async function(packId) {
+      await axiosService
         .delete("/pack/" + packId)
-        .then((response) => {
+        .then(response => {
           response;
           this.refreshList();
+          basicAlertSwal("Deleted pack");
         })
-        .catch((e) => console.log(e));
+        .catch(e => console.log(e));
     },
     async refreshList() {
-      await axios
+      await axiosService
         .get("/pack/getAllUsersPacks")
-        .then((response) => {
+        .then(response => {
           this.packs = response.data.data;
         })
-        .catch((e) => {
+        .catch(e => {
           console.log(e);
         });
     },
   },
   async created() {
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
     await this.refreshList();
   },
 };
