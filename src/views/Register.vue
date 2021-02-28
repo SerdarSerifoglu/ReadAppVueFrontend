@@ -20,11 +20,15 @@
         <button @click="submit">REGISTER</button>
       </div>
     </div>
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
+import { basicAlertSwal } from "../helpers/alertHelper.js";
+import Loading from "../components/Loading.vue";
+
 export default {
   data() {
     return {
@@ -37,28 +41,34 @@ export default {
     };
   },
   name: "Register",
-  components: {},
+  components: {
+    loading: Loading,
+  },
   methods: {
     submit() {
       console.log(this.registerData.name);
-      axios
+      axiosNonTokenService
         .post("/auth/register", {
           ...this.registerData,
         })
         .then(response => {
           console.log(response);
+          basicAlertSwal("Created user");
+          this.$router.push("/login");
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+          console.log(e);
+          basicAlertSwal(
+            e.response.status == 400
+              ? "This user already exists"
+              : "Created Error",
+            "error"
+          );
+        });
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
     },
-  },
-  created() {
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
   },
 };
 </script>
