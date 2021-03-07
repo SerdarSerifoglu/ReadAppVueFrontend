@@ -69,6 +69,7 @@
                   :dataValue="wordData.mainWord"
                   :attention1="$v.wordData.mainWord.required"
                   attention1Text="Main word is required !"
+                  @keydown.native.enter="wordSubmit"
                 ></app-input>
                 <app-input
                   @input="$v.wordData.secondaryWord.$touch()"
@@ -83,13 +84,14 @@
                   :dataValue="wordData.secondaryWord"
                   :attention1="$v.wordData.secondaryWord.required"
                   attention1Text="Secondary word is required !"
+                  @keydown.native.enter="wordSubmit"
                 ></app-input>
               </div>
             </div>
             <div class="modal-footer">
               <button
                 class="btn btn-success center"
-                @click="wordData._id != undefined ? updateWord() : saveWord()"
+                @click="wordSubmit"
                 :disabled="$v.wordData.$invalid"
               >
                 <i class="far fa-save" style="margin-right: 3px"></i> SAVE
@@ -141,6 +143,9 @@ export default {
     "word-list": WordList,
   },
   methods: {
+    wordSubmit: function () {
+      this.wordData._id != undefined ? this.updateWord() : this.saveWord();
+    },
     modalClick: function () {
       this.modalDisplay = !this.modalDisplay;
       this.wordData = { ...this.wordData };
@@ -180,6 +185,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
+          this.resetWordData();
         })
         .catch((e) => console.log(e));
     },
@@ -189,8 +195,15 @@ export default {
         .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
+          this.resetWordData();
         })
         .catch((e) => console.log(e));
+    },
+    resetWordData: function () {
+      this.wordData = {
+        mainWord: "",
+        secondaryWord: "",
+      };
     },
     newWord: function () {
       this.wordData = {};
