@@ -57,6 +57,8 @@
             <div class="modal-body">
               <div class="addWord">
                 <app-input
+                  ref="mainWord"
+                  childRef="theInput"
                   @input="$v.wordData.mainWord.$touch()"
                   :inputClass="{
                     'form-control': true,
@@ -107,15 +109,19 @@
     </div>
 
     <!-- Modal End -->
+
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import Input from "../../components/Input.vue";
 import Combobox from "../../components/Combobox.vue";
 import { required } from "vuelidate/lib/validators";
 import WordList from "../../components/WordList.vue";
+import axiosService from "../../helpers/axiosHelper.js";
+import axiosNonLoadingService from "../../helpers/axiosHelperNonLoading.js";
+import Loading from "../../components/Loading.vue";
 
 export default {
   data() {
@@ -141,6 +147,7 @@ export default {
     "app-input": Input,
     "app-combobox": Combobox,
     "word-list": WordList,
+    loading: Loading,
   },
   methods: {
     wordSubmit: function () {
@@ -157,7 +164,7 @@ export default {
     },
     packComboboxChange: async function (event) {
       this.selectedPack = event;
-      await axios
+      await axiosService
         .get("/pack/" + this.selectedPack + "/words")
         .then((response) => {
           this.words = response.data.data[0].words;
@@ -171,7 +178,7 @@ export default {
       this.modalClick();
     },
     deleteButtonClick: async function (wordId) {
-      await axios
+      await axiosService
         .delete("/pack/" + this.selectedPack + "/word/" + wordId)
         .then((response) => {
           response;
@@ -180,22 +187,24 @@ export default {
         .catch((e) => console.log(e));
     },
     saveWord: async function () {
-      await axios
+      await axiosService
         .post("/pack/" + this.selectedPack + "/word", { ...this.wordData })
         .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
           this.resetWordData();
+          this.$refs.mainWord.$refs.theInput.focus();
         })
         .catch((e) => console.log(e));
     },
     updateWord: async function () {
-      await axios
+      await axiosService
         .put("/pack/" + this.selectedPack + "/word", { ...this.wordData })
         .then((response) => {
           console.log(response);
           this.packComboboxChange(this.selectedPack);
           this.resetWordData();
+          this.$refs.mainWord.$refs.theInput.focus();
         })
         .catch((e) => console.log(e));
     },
@@ -210,7 +219,7 @@ export default {
       this.modalClick();
     },
     async refreshList() {
-      await axios
+      await axiosService
         .get("/pack/" + this.selectedPack + "/words")
         .then((response) => {
           this.words = response.data.data[0].words;
@@ -218,22 +227,19 @@ export default {
         .catch((e) => console.log(e));
     },
   },
-  async created() {
+  created() {
     this.comboboxCurrentValue = this.$store.getters.getUserSettings.selectedPackId;
     if (this.selectedPack === "") {
       this.selectedPack = this.comboboxCurrentValue;
     }
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
-    await axios
+
+    axiosNonLoadingService
       .get("/pack/forCbx")
       .then((response) => {
         this.packComboboxData = response.data.data;
       })
       .catch((e) => console.log(e));
-    await this.refreshList();
+    this.refreshList();
   },
 };
 </script>

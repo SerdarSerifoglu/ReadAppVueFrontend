@@ -8,6 +8,7 @@
         :type="typeName"
         :class="inputClass"
         :id="inputId"
+        :ref="childRef"
       />
       <small class="text-danger" v-if="!attention1">{{ attention1Text }}</small>
       <small class="text-danger" v-if="!attention2">{{ attention2Text }}</small>
@@ -21,6 +22,9 @@ export default {
     return {};
   },
   props: {
+    childRef: {
+      type: String,
+    },
     dataValue: {
       type: String,
     },
