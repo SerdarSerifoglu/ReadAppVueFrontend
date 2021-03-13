@@ -21,16 +21,19 @@
       v-model="wordColor"
       :dataValue="wordColor"
     ></app-input>
-    {{ userSettingsId }}
     <button class="btn btn-success center" @click="insertOrUpdateWord()">
       <i class="far fa-save" style="margin-right: 3px"></i> SAVE
     </button>
+    <loading></loading>
   </div>
 </template>
 <script>
-import axios from "axios";
 import Combobox from "../../components/Combobox.vue";
 import Input from "../../components/Input.vue";
+import axiosService from "../../helpers/axiosHelper.js";
+import axiosNonLoadingService from "../../helpers/axiosHelperNonLoading.js";
+import Loading from "../../components/Loading.vue";
+import { basicAlertSwal } from "../../helpers/alertHelper.js";
 
 export default {
   data() {
@@ -45,12 +48,13 @@ export default {
   components: {
     "app-combobox": Combobox,
     "app-input": Input,
+    loading: Loading,
   },
   methods: {
     insertOrUpdateWord: async function () {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.userSettingsId === "") {
-        await axios
+        await axiosService
           .post("/userSetting/add", {
             selectedPackId: this.selectedPack,
             wordColor: this.wordColor,
@@ -58,11 +62,11 @@ export default {
           .then((response) => {
             console.log(response);
             this.$store.dispatch("setUserSettings");
-            alert("User Settings added");
+            basicAlertSwal("User Settings added");
           })
           .catch((e) => console.log(e));
       } else {
-        await axios
+        await axiosService
           .put("/userSetting/", {
             _id: this.userSettingsId,
             selectedPackId: this.selectedPack,
@@ -71,22 +75,17 @@ export default {
           .then((response) => {
             console.log(response);
             this.$store.dispatch("setUserSettings");
-            alert("User Settings updated");
+            basicAlertSwal("User Settings updated");
           })
           .catch((e) => console.log(e));
       }
     },
   },
-  async created() {
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
-    await axios
+  created() {
+    axiosNonLoadingService
       .get("/pack/forCbx")
       .then((response) => {
         this.packComboboxData = response.data.data;
-        console.log(this.packComboboxData);
       })
       .catch((e) => {
         e;
