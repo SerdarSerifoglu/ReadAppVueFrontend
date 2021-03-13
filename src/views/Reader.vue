@@ -421,13 +421,13 @@ export default {
       this.modalClick();
     },
   },
-  async created() {
+  mounted() {
     this.comboboxCurrentValue = this.$store.getters.getUserSettings.selectedPackId;
     if (this.selectedPack === "") {
       this.selectedPack = this.comboboxCurrentValue;
     }
 
-    await axiosNonLoadingService
+    axiosNonLoadingService
       .get("/pack/forCbx")
       .then(response => {
         this.packComboboxData = response.data.data;
