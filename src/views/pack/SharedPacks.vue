@@ -32,39 +32,46 @@ td {
         </tr>
       </tbody>
     </table>
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axiosService from "../../helpers/axiosHelper.js";
+import Loading from "../../components/Loading.vue";
+import { basicAlertSwal } from "../../helpers/alertHelper.js";
+
 export default {
   data() {
     return {
       packs: [],
     };
   },
-  async created() {
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
-    await axios
-      .get("/pack/getAllSharedPacks")
-      .then(response => {
-        this.packs = response.data.data;
-      })
-      .catch(e => console.log(e));
+  components: {
+    loading: Loading,
   },
   methods: {
-    addToMyPackages: async function(packId) {
-      await axios
+    addToMyPackages: async function (packId) {
+      await axiosService
         .post("/pack/packCopy", { packId: packId })
-        .then(response => {
-          console.log(response);
-          alert("That pack added you packeges.");
+        .then((response) => {
+          response;
+          basicAlertSwal("Pack Added");
+          this.refreshList();
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
+    refreshList: function () {
+      axiosService
+        .get("/pack/getAllSharedPacks")
+        .then((response) => {
+          this.packs = response.data.data;
+        })
+        .catch((e) => console.log(e));
+    },
+  },
+  mounted() {
+    this.refreshList();
   },
 };
 </script>
