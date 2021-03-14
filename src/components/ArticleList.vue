@@ -1,59 +1,97 @@
 <style scoped></style>
 
 <template>
-  <div class="table-responsive">
-    <table class="table table-sm">
-      <thead>
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Description</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="article in articles" :key="article._id">
-          <td>{{ article.title }}</td>
-          <td>{{ article.description }}</td>
-          <td>
-            <button class="btn btn-success" @click="sendArticle(article)">
-              SELECT
-            </button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <section>
+    <b-table
+      :data="listData"
+      ref="table"
+      :default-sort="['title', 'asc']"
+      sort-icon="arrow-up"
+      sort-icon-size="is-small"
+    >
+      <b-table-column
+        field="title"
+        :visible="columnsVisible['title'].display"
+        :label="columnsVisible['title'].title"
+        width="auto"
+        sortable
+        v-slot="props"
+        searchable
+      >
+        {{ props.row.title }}
+      </b-table-column>
+
+      <b-table-column
+        field="description"
+        :visible="columnsVisible['description'].display"
+        :label="columnsVisible['description'].title"
+        sortable
+        v-slot="props"
+        searchable
+      >
+        {{ props.row.description }}
+      </b-table-column>
+
+      <b-table-column
+        :visible="columnsVisible['actions'].display"
+        :label="columnsVisible['actions'].title"
+        centered
+        v-slot="props"
+      >
+        <b-button
+          title="Edit this pack"
+          class="listEditButton"
+          @click="
+            editButtonClickList(
+              props.row._id,
+              props.row.title,
+              props.row.description,
+              props.row.article
+            )
+          "
+          type="is-text"
+          icon-right="pencil"
+        />
+        &nbsp;
+
+        <b-button
+          title="Delete this pack"
+          class="listDeleteButton"
+          type="is-text"
+          icon-right="delete"
+          @click="deleteButtonClickInList(props.row._id)"
+        />
+      </b-table-column>
+    </b-table>
+  </section>
 </template>
 
 <script>
-import axios from "axios";
 export default {
   data() {
     return {
-      articles: [],
+      data: [],
+      columnsVisible: {
+        title: { title: "Title", display: true },
+        description: { title: "Description", display: true },
+        actions: { title: "Actions", display: true },
+      },
+      sortIcon: "arrow-up",
+      sortIconSize: "is-small",
     };
   },
-  created: async function() {
-    axios.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer: ${this.$store.state.token}`;
-    await axios
-      .get("/article/", {
-        headers: {
-          Authorization: `Bearer: ${this.$store.state.token}`,
-        },
-      })
-      .then(response => {
-        this.articles = response.data.data;
-        console.log(response.data.data);
-      })
-      .catch(e => console.log(e));
-  },
+  props: ["listData"],
   methods: {
-    sendArticle(article) {
-      console.log(article);
-      this.$emit("data", article);
+    editButtonClickList: function (id, title, description, article) {
+      this.$emit("selectClick", {
+        id: id,
+        title: title,
+        description: description,
+        article: article,
+      });
+    },
+    deleteButtonClickInList: function (id) {
+      this.$emit("deleteClick", id);
     },
   },
 };

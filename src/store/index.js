@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import axios from "axios";
 import router from "../router/index.js";
 import createPersistedState from "vuex-persistedstate";
+
 Vue.use(Vuex);
 export default new Vuex.Store({
   plugins: [createPersistedState()],
@@ -57,7 +58,11 @@ export default new Vuex.Store({
     },
     setUserSettings({ commit }) {
       axios
-        .get("/userSetting/getUserSettings")
+        .get(`${process.env.VUE_APP_BASE_PATH}/userSetting/getUserSettings`, {
+          headers: {
+            Authorization: `Bearer: ${this.state.token}`,
+          },
+        })
         .then(response => {
           commit("setUserSetting", response.data.data);
         })
