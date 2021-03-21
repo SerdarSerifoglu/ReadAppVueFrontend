@@ -105,6 +105,7 @@ input[type="password"]:focus {
 import router from "../router/index.js";
 import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
 import Loading from "../components/Loading.vue";
+import { basicAlertSwal } from "../helpers/alertHelper.js";
 
 export default {
   data() {
@@ -128,7 +129,11 @@ export default {
           this.$store.commit("setToken", response.data.access_token);
           router.push("/reader");
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          if (e.response.data.success === false) {
+            basicAlertSwal(e.response.data.message, "error");
+          }
+        });
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
