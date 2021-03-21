@@ -262,8 +262,8 @@ import store from "../store/index.js";
 export default {
   data() {
     return {
-      comboboxCurrentValue: this.$store.getters.getUserSettings.selectedPackId,
-      userSettingColor: this.$store.getters.getUserSettings.color ?? "FF2D00",
+      comboboxCurrentValue: store.getters.getUserSettings.selectedPackId,
+      userSettingColor: store.getters.getUserSettings.color ?? "FF2D00",
       modalDisplayValue: "none",
       modalDisplay: false,
       selectData: "",
@@ -365,7 +365,7 @@ export default {
       this.openTextArea = true;
     },
     readToken() {
-      this.tokenNow = this.$store.state.token;
+      this.tokenNow = store.state.token;
     },
     insertOrUpdateWord: async function () {
       //işlem uygulanıcak data varsa update yoksa add
