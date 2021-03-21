@@ -21,7 +21,7 @@ export default new Vuex.Store({
       state.token = token;
     },
     clearToken(state) {
-      state;
+      state.token = "";
       router.push("/login");
     },
     setUserSetting(state, data) {
