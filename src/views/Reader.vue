@@ -257,6 +257,7 @@ import Input from "../components/Input.vue";
 import ArticleList from "../components/ArticleList.vue";
 import { basicAlertSwal } from "../helpers/alertHelper.js";
 import Loading from "../components/Loading.vue";
+import store from "../store/index.js";
 
 export default {
   data() {
@@ -454,7 +455,7 @@ export default {
     },
   },
   created() {
-    this.comboboxCurrentValue = this.$store.getters.getUserSettings.selectedPackId;
+    this.comboboxCurrentValue = store.getters.getUserSettings.selectedPackId;
     if (this.selectedPack === "") {
       this.selectedPack = this.comboboxCurrentValue;
     }
@@ -467,7 +468,7 @@ export default {
       .catch((e) => {
         e;
       });
-    this.$store.dispatch("setUserSettings");
+    store.dispatch("setUserSettings");
     this.refreshArticleList();
   },
   watch: {
