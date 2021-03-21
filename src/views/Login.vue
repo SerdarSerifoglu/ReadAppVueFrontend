@@ -80,11 +80,17 @@ input[type="password"]:focus {
   <div class="login">
     <div class="container">
       <div class="logo1"></div>
-      <input type="email" placeholder="Email" v-model="loginData.email" />
+      <input
+        type="email"
+        placeholder="Email"
+        v-model="loginData.email"
+        @keydown.enter="submit"
+      />
       <input
         type="password"
         placeholder="Password"
         v-model="loginData.password"
+        @keydown.enter="submit"
       />
       <div class="forgotPass" @click="goForgotPassword">Forgot my password</div>
       <div class="login-div">
