@@ -1,18 +1,69 @@
+<style scoped>
+.word-add-div {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  margin: 30px auto;
+  padding: 20px 30px;
+  -webkit-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  -moz-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  border-radius: 10px;
+}
+.word-add-title {
+  align-self: flex-start;
+  font-size: 2rem;
+  font-weight: 100;
+  margin-bottom: 20px;
+}
+.word-main-text {
+  width: 60%;
+}
+.add-button {
+  margin-top: 20px;
+}
+@media only screen and (max-width: 768px) {
+  .word-add-div {
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-direction: row;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    border-bottom: 1px solid gray;
+  }
+  .word-add-title {
+    display: none;
+  }
+  .add-button {
+    margin-left: 20px;
+    margin-top: 0px;
+  }
+}
+</style>
+
 <template>
   <div>
-    <app-combobox
-      classValue="col-sm-6"
-      :mainData="packComboboxData"
-      @comboboxChange="packComboboxChange($event)"
-      :currentValue="comboboxCurrentValue"
-    />
-    <button class="btn btn-primary btn-md" @click="newWord()">
-      <span>
-        <i class="fas fa-plus"></i>
-      </span>
-      Add Word
-    </button>
-
+    <div class="word-add-div">
+      <h2 class="word-add-title">Select a Pack</h2>
+      <app-combobox
+        classValue="word-main-text"
+        :mainData="packComboboxData"
+        @comboboxChange="packComboboxChange($event)"
+        :currentValue="comboboxCurrentValue"
+      />
+      <button class="btn btn-primary btn-md add-button" @click="newWord()">
+        <span>
+          <i class="fas fa-plus"></i>
+        </span>
+        Add Word
+      </button>
+    </div>
     <word-list
       :listData="words"
       @editClick="

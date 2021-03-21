@@ -1,4 +1,36 @@
 <style scoped>
+textarea:focus,
+input:focus {
+  outline: none;
+}
+.pack-add-div {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50%;
+  margin: 30px auto;
+  padding: 20px 30px;
+  -webkit-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  -moz-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  border-radius: 10px;
+}
+.pack-add-div .pack-add-title {
+  align-self: flex-start;
+  font-size: 2rem;
+  font-weight: 100;
+}
+.pack-add-div .pack-add-text {
+  width: 60%;
+  height: 40px;
+  border: 1px solid gray;
+  border-radius: 15px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
 .btnSuccess {
   color: #fff;
   background-color: #28a745;
@@ -13,16 +45,44 @@ th,
 td {
   text-align: center;
 }
+
+@media only screen and (max-width: 768px) {
+  .pack-add-div {
+    /* position: fixed; */
+    /* z-index: 999; */
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 0;
+    flex-direction: row;
+    padding: 10px 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    box-shadow: none;
+    border-bottom: 1px solid gray;
+  }
+  .pack-add-title {
+    display: none;
+  }
+  .pack-add-div .pack-add-text {
+    margin: 0 20px;
+  }
+}
 </style>
 <template>
   <div class="packAdd">
-    <button
-      type="button"
-      class="btn btn-primary"
-      @click="addNewPackButtonClick()"
-    >
-      Add New Pack
-    </button>
+    <div class="pack-add-div">
+      <h2 class="pack-add-title">Add Pack</h2>
+      <input class="pack-add-text" type="text" placeholder="Add a new pack" />
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        @click="addNewPackButtonClick()"
+      >
+        Add New Pack
+      </button>
+    </div>
 
     <!-- Modal -->
 
@@ -148,7 +208,7 @@ export default {
     loading: Loading,
   },
   methods: {
-    modalClick: function() {
+    modalClick: function () {
       this.modalDisplay = !this.modalDisplay;
       this.packData = { ...this.packData };
       if (this.modalDisplay) {
@@ -157,30 +217,30 @@ export default {
         this.modalDisplayValue = "none";
       }
     },
-    insertOrUpdatePack: async function() {
+    insertOrUpdatePack: async function () {
       //işlem uygulanıcak data varsa update yoksa add
       if (this.packData._id === undefined) {
         await axiosService
           .post("/pack/add/", { ...this.packData })
-          .then(response => {
+          .then((response) => {
             basicAlertSwal("Pack added");
             console.log(response);
             this.refreshList();
             this.modalClick();
           })
-          .catch(e => {
+          .catch((e) => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       } else {
         await axiosService
           .put("/pack/" + this.packData._id, { ...this.packData })
-          .then(response => {
+          .then((response) => {
             console.log(response);
             basicAlertSwal("Pack updated");
             this.refreshList();
             this.modalClick();
           })
-          .catch(e => {
+          .catch((e) => {
             basicAlertSwal(`Error - ${e}`, "error");
           });
       }
@@ -193,38 +253,38 @@ export default {
     async shareButtonClick(packId, packIsShared) {
       await axiosService
         .put("/pack/" + packId + "/shared", {})
-        .then(response => {
+        .then((response) => {
           this.refreshList();
           console.log(response);
           basicAlertSwal(
             packIsShared == true ? "Pack closed to share" : "Pack shared"
           );
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
-    editButtonClick: async function(packId, packTitle, packDescription) {
+    editButtonClick: async function (packId, packTitle, packDescription) {
       this.packData._id = packId;
       this.packData.title = packTitle;
       this.packData.description = packDescription;
       this.modalClick();
     },
-    deleteButtonClick: async function(packId) {
+    deleteButtonClick: async function (packId) {
       await axiosService
         .delete("/pack/" + packId)
-        .then(response => {
+        .then((response) => {
           response;
           this.refreshList();
           basicAlertSwal("Deleted pack");
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
     async refreshList() {
       await axiosService
         .get("/pack/getAllUsersPacks")
-        .then(response => {
+        .then((response) => {
           this.packs = response.data.data;
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
         });
     },

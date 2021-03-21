@@ -9,17 +9,21 @@
   outline: none;
 }
 .container {
-  position: absolute;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  background-color: white;
+  margin-top: 30px;
   width: 500px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  padding: 20px 40px;
+  -webkit-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  -moz-box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  box-shadow: 5px 6px 17px 0px rgba(0, 0, 0, 0.68);
+  border-radius: 10px;
 }
 .logo1 {
-  width: 500px;
+  width: 400px;
   height: 100px;
   background-image: url("../assets/HardworderSWG.svg");
   background-repeat: no-repeat;
@@ -27,60 +31,61 @@
 }
 input[type="email"],
 input[type="password"] {
-  width: 280px;
-  transition: 0.25s;
+  width: 80%;
   text-align: center;
-  padding: 15px 30px;
-  font-size: 20px;
-  margin: 20px 0px;
+  padding: 5px 20px;
+  font-size: 15px;
   border: none;
-  border-radius: 15px;
-  /* border-bottom: 2px solid rgba(0, 0, 0, 0.1);
-     */
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
-}
-.login-div button {
-  padding: 15px 50px;
-  margin: 20px 0px 10px 0px;
-  border-radius: 15px;
-  background-color: white;
-  color: white;
-  border: none;
-  font-size: 20px;
-  color: red;
-  border: 2px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  margin: 10px 0px;
+  border: 1px solid gray;
+  transition: width 1s;
 }
 input[type="email"]:focus,
 input[type="password"]:focus {
-  transition: 0.5s;
-  width: 380px;
+  border: 1px solid red;
+  width: 100%;
+  transition: width 1s;
+}
+.login-div button {
+  padding: 8px 30px;
+  margin-top: 10px;
+  border-radius: 15px;
+  background-color: white;
+  border: none;
+  font-size: 15px;
+  color: red;
+  border: 1px solid red;
+  transition: 1s;
 }
 .login-div button:hover {
   background-color: red;
   color: white;
-  transition: 0.5s;
+  transition: 1s;
 }
 .forgotPass {
   cursor: pointer;
 }
+@media only screen and (max-width: 768px) {
+  .container {
+    width: 100%;
+    height: 100vh;
+    justify-content: flex-start;
+    margin-top: 0px;
+    border-radius: 0;
+  }
+}
 </style>
-
 <template>
   <div class="login">
     <div class="container">
       <div class="logo1"></div>
-      <div class="username-div">
-        <input type="email" placeholder="Email" v-model="loginData.email" />
-      </div>
-      <div class="password-div">
-        <input
-          type="password"
-          placeholder="Password"
-          v-model="loginData.password"
-        />
-      </div>
+      <input type="email" placeholder="Email" v-model="loginData.email" />
+      <input
+        type="password"
+        placeholder="Password"
+        v-model="loginData.password"
+      />
       <div class="forgotPass" @click="goForgotPassword">Forgot my password</div>
       <div class="login-div">
         <button @click="submit">LOGIN</button>
@@ -113,20 +118,20 @@ export default {
     submit() {
       axiosNonTokenService
         .post("/auth/login", { ...this.loginData })
-        .then(response => {
+        .then((response) => {
           this.$store.commit("setToken", response.data.access_token);
           router.push("/reader");
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
     readToken() {
       this.tokenNow = this.$store.state.token;
     },
-    goForgotPassword: function() {
+    goForgotPassword: function () {
       router.push("/forgotpassword");
     },
   },
-  beforeCreate: function() {
+  beforeCreate: function () {
     localStorage.removeItem("vuex");
   },
 };
