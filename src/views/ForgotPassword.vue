@@ -29,13 +29,16 @@
     >
       Send me reset instructions
     </button>
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
 import Input from "../components/Input.vue";
 import { required, email } from "vuelidate/lib/validators";
+import { basicAlertSwal } from "../helpers/alertHelper.js";
+import Loading from "../components/Loading.vue";
 
 export default {
   data() {
@@ -51,16 +54,17 @@ export default {
   },
   components: {
     "app-input": Input,
+    loading: Loading,
   },
   methods: {
-    sendResetInstruction: async function() {
-      await axios
+    sendResetInstruction: function () {
+      axiosNonTokenService
         .post("/auth/forgotpassword", { email: this.email })
-        .then(response => {
-          console.log(response);
-          alert("Send Mail");
+        .then((response) => {
+          response;
+          basicAlertSwal("Send mail this address for reset password");
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
   },
 };

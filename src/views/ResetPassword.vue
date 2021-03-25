@@ -43,19 +43,22 @@
       @click="resetPassword"
       :disabled="
         !$v.password.required ||
-          !$v.password.minLength ||
-          !$v.repeatPassword.sameAsPassword
+        !$v.password.minLength ||
+        !$v.repeatPassword.sameAsPassword
       "
     >
       Change My Password
     </button>
+    <loading></loading>
   </div>
 </template>
 
 <script>
-import axios from "axios";
+import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
 import Input from "../components/Input.vue";
 import { required, minLength, sameAs } from "vuelidate/lib/validators";
+import { basicAlertSwal } from "../helpers/alertHelper.js";
+import Loading from "../components/Loading.vue";
 
 export default {
   data() {
@@ -75,21 +78,22 @@ export default {
   },
   components: {
     "app-input": Input,
+    loading: Loading,
   },
   methods: {
-    resetPassword: async function() {
+    resetPassword: async function () {
       var resetToken = this.$route.query.resetPasswordToken;
       console.log(this.$route.query);
       //düzenlenicek
-      await axios
+      await axiosNonTokenService
         .put(`/auth/resetpassword?resetPasswordToken=${resetToken}`, {
           password: this.password,
         })
-        .then(response => {
-          console.log(response);
-          alert("Change you password");
+        .then((response) => {
+          response;
+          basicAlertSwal("Change you password");
         })
-        .catch(e => console.log(e));
+        .catch((e) => console.log(e));
     },
   },
 };
