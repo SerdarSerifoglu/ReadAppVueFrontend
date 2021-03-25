@@ -455,10 +455,10 @@ export default {
     },
   },
   created() {
-    this.comboboxCurrentValue = store.getters.getUserSettings.selectedPackId;
-    if (this.selectedPack === "") {
-      this.selectedPack = this.comboboxCurrentValue;
-    }
+    axiosNonLoadingService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+    axiosNonLoadingService.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer: ${store.getters.getStateToken}`;
 
     axiosNonLoadingService
       .get("/pack/forCbx")
@@ -468,6 +468,12 @@ export default {
       .catch((e) => {
         e;
       });
+
+    this.comboboxCurrentValue = store.getters.getUserSettings.selectedPackId;
+    if (this.selectedPack === "") {
+      this.selectedPack = this.comboboxCurrentValue;
+    }
+
     store.dispatch("setUserSettings");
     this.refreshArticleList();
   },

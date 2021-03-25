@@ -22,7 +22,7 @@ axiosNonLoadingService.interceptors.response.use(
   },
   function(error) {
     if (error.response.status === 401) {
-      this.$store.dispatch("logout");
+      store.dispatch("logout");
     }
     return Promise.reject(error);
   }

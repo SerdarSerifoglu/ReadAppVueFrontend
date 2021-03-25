@@ -106,6 +106,7 @@ import router from "../router/index.js";
 import axiosNonTokenService from "../helpers/axiosHelperNonToken.js";
 import Loading from "../components/Loading.vue";
 import { basicAlertSwal } from "../helpers/alertHelper.js";
+import store from "../store/index";
 
 export default {
   data() {
@@ -126,7 +127,7 @@ export default {
       axiosNonTokenService
         .post("/auth/login", { ...this.loginData })
         .then((response) => {
-          this.$store.commit("setToken", response.data.access_token);
+          store.commit("setToken", response.data.access_token);
           router.push("/reader");
         })
         .catch((e) => {
@@ -136,7 +137,7 @@ export default {
         });
     },
     readToken() {
-      this.tokenNow = this.$store.state.token;
+      this.tokenNow = store.state.token;
     },
     goForgotPassword: function () {
       router.push("/forgotpassword");
