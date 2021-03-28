@@ -1,13 +1,4 @@
 <style scoped>
-* {
-  padding: 0;
-  margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  box-sizing: border-box;
-}
-*:focus {
-  outline: none;
-}
 .container {
   display: flex;
   flex-direction: column;
