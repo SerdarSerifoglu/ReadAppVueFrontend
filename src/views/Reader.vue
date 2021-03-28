@@ -376,6 +376,8 @@ export default {
           .then((response) => {
             console.log(response);
             basicAlertSwal("Word added");
+            this.clickedReadButton = false;
+            this.readButtonClick();
           })
           .catch((e) => console.log(e));
       } else {
@@ -384,6 +386,8 @@ export default {
           .then((response) => {
             console.log(response);
             basicAlertSwal("Word updated");
+            this.clickedReadButton = false;
+            this.readButtonClick();
           })
           .catch((e) => console.log(e));
       }
@@ -455,6 +459,10 @@ export default {
     },
   },
   created() {
+    axiosService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
+    axiosService.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer: ${store.getters.getStateToken}`;
     axiosNonLoadingService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
     axiosNonLoadingService.defaults.headers.common[
       "Authorization"
