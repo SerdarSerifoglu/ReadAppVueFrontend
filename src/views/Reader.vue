@@ -64,7 +64,7 @@ span {
           <button
             type="button"
             class="btn btn-primary float-right"
-            @click="addWordButtonClick()"
+            @click="addWordModalClick()"
           >
             Add Word
           </button>
@@ -72,34 +72,6 @@ span {
       </div>
 
       <div class="reader">
-        <app-input
-          @input="$v.articleData.title.$touch()"
-          :inputClass="{
-            'form-control': true,
-            'is-invalid': $v.articleData.title.$error,
-          }"
-          inputId="articleTitle"
-          label="Article Title"
-          divClass="col-md-12 col-xs-12"
-          v-model="articleData.title"
-          :dataValue="articleData.title"
-          :attention1="$v.articleData.title.required"
-          attention1Text="Title is required !"
-        ></app-input>
-        <app-input
-          @input="$v.articleData.description.$touch()"
-          :inputClass="{
-            'form-control': true,
-            'is-invalid': $v.articleData.description.$error,
-          }"
-          inputId="articleDescription"
-          label="Article Description"
-          divClass="col-md-12 col-xs-12"
-          v-model="articleData.description"
-          :dataValue="articleData.description"
-          :attention1="$v.articleData.description.required"
-          attention1Text="Description is required !"
-        ></app-input>
         <div class="form-group">
           <textarea
             v-if="openTextArea"
@@ -134,14 +106,14 @@ span {
           CHANGE ARTICLE
         </button>
         <button
-          @click="saveArticle"
-          class="btn btn-warning btn-lg"
-          style="margin-left: 0.5rem"
-          :disabled="$v.articleData.$invalid"
+          type="button"
+          class="btn btn-info btn-lg"
+          style="margin-left: 0.5rem; color: #fff"
+          @click="saveArticleModalClick()"
+          :disabled="$v.articleData.article.$invalid"
         >
           SAVE ARTICLE
         </button>
-
         <p
           class="articleBoard col-xs-12"
           v-html="readArticle"
@@ -158,10 +130,10 @@ span {
       aria-labelledby="mySmallModalLabel"
       aria-hidden="true"
       v-bind:class="{
-        show: modalDisplay,
+        show: addWordModalDisplay,
       }"
       v-bind:style="{
-        display: modalDisplayValue,
+        display: addWordModalDisplayValue,
       }"
     >
       <div class="modal-dialog" id="addWordModal">
@@ -171,7 +143,7 @@ span {
               <h5 class="modal-title" id="exampleModalLongTitle">Save Word</h5>
               <button
                 type="button"
-                @click="modalClick()"
+                @click="addWordModalClick()"
                 style="
                   border: 0;
                   padding: 3px;
@@ -220,7 +192,10 @@ span {
               >
                 <i class="far fa-save" style="margin-right: 3px"></i> SAVE
               </button>
-              <button class="btn btn-danger center" @click="modalClick()">
+              <button
+                class="btn btn-danger center"
+                @click="addWordModalClick()"
+              >
                 <i class="far fa-window-close" style="margin-right: 3px"></i>
                 Close
               </button>
@@ -230,6 +205,91 @@ span {
       </div>
     </div>
     <!-- Modal End -->
+
+    <!-- Modal For Article -->
+    <div
+      class="modal fade bd-example-modal-sm"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="mySmallModalLabel"
+      aria-hidden="true"
+      v-bind:class="{
+        show: saveArticleModalDisplay,
+      }"
+      v-bind:style="{
+        display: saveArticleModalDisplayValue,
+      }"
+    >
+      <div class="modal-dialog" id="saveAricleModal">
+        <div class="modal-content">
+          <div style="margin: 2rem">
+            <div class="modal-header">
+              <h5 class="modal-title" id="modal-title-article">Save Article</h5>
+              <button
+                type="button"
+                @click="saveArticleModalClick()"
+                style="
+                  border: 0;
+                  padding: 3px;
+                  background-color: #fff;
+                  cursor: pointer;
+                "
+              >
+                <span>X</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <app-input
+                @input="$v.articleData.title.$touch()"
+                :inputClass="{
+                  'form-control': true,
+                  'is-invalid': $v.articleData.title.$error,
+                }"
+                inputId="articleTitle"
+                label="Article Title"
+                divClass="col-md-12 col-xs-12"
+                v-model="articleData.title"
+                :dataValue="articleData.title"
+                :attention1="$v.articleData.title.required"
+                attention1Text="Title is required !"
+              ></app-input>
+              <app-input
+                @input="$v.articleData.description.$touch()"
+                :inputClass="{
+                  'form-control': true,
+                  'is-invalid': $v.articleData.description.$error,
+                }"
+                inputId="articleDescription"
+                label="Article Description"
+                divClass="col-md-12 col-xs-12"
+                v-model="articleData.description"
+                :dataValue="articleData.description"
+                :attention1="$v.articleData.description.required"
+                attention1Text="Description is required !"
+              ></app-input>
+            </div>
+            <div class="modal-footer">
+              <button
+                @click="saveArticle"
+                class="btn btn-warning"
+                style="margin-left: 0.5rem"
+                :disabled="$v.articleData.$invalid"
+              >
+                <i class="far fa-save" style="margin-right: 3px"></i> SAVE
+              </button>
+              <button
+                class="btn btn-danger center"
+                @click="saveArticleModalClick()"
+              >
+                <i class="far fa-window-close" style="margin-right: 3px"></i>
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal For Article End -->
     <p>{{ wordData }}</p>
 
     <article-list
@@ -264,8 +324,10 @@ export default {
     return {
       comboboxCurrentValue: store.getters.getUserSettings.selectedPackId,
       userSettingColor: store.getters.getUserSettings.color ?? "FF2D00",
-      modalDisplayValue: "none",
-      modalDisplay: false,
+      addWordModalDisplayValue: "none",
+      addWordModalDisplay: false,
+      saveArticleModalDisplayValue: "none",
+      saveArticleModalDisplay: false,
       selectData: "",
       selectedPack: "",
       packComboboxData: [],
@@ -415,17 +477,15 @@ export default {
           .catch((e) => console.log(e));
       }
     },
-    modalClick: function () {
-      this.modalDisplay = !this.modalDisplay;
-      if (this.modalDisplay) {
-        this.modalDisplayValue = "block";
+    addWordModalClick: function () {
+      this.addWordModalDisplay = !this.addWordModalDisplay;
+      if (this.addWordModalDisplay) {
+        this.addWordModalDisplayValue = "block";
       } else {
-        this.modalDisplayValue = "none";
+        this.addWordModalDisplayValue = "none";
       }
     },
-    async addWordButtonClick() {
-      this.modalClick();
-    },
+
     selectButtonClick: async function (
       articleId,
       articleTitle,
@@ -456,6 +516,14 @@ export default {
           console.log(this.articles);
         })
         .catch((e) => console.log(e));
+    },
+    saveArticleModalClick: function () {
+      this.saveArticleModalDisplay = !this.saveArticleModalDisplay;
+      if (this.saveArticleModalDisplay) {
+        this.saveArticleModalDisplayValue = "block";
+      } else {
+        this.saveArticleModalDisplayValue = "none";
+      }
     },
   },
   created() {
