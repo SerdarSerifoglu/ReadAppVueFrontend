@@ -1,7 +1,7 @@
 <template>
   <div :class="classValue">
     <select
-      class="form-control"
+      class="form-control form-select"
       v-model="selectedValue"
       @change="sendSelectedValue()"
     >
