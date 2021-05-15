@@ -125,6 +125,7 @@ span {
         <div class="reader-article">
           <div class="form-group">
             <textarea
+              ref="articleRef"
               v-if="openTextArea"
               v-model="articleData.article"
               @input="$v.articleData.article.$touch()"
@@ -579,6 +580,7 @@ export default {
       this.articleData.title = articleTitle;
       this.articleData.description = articleDescription;
       this.articleData.article = article;
+      this.$refs.articleRef.focus();
     },
     deleteButtonClickInArticleList: async function (articleId) {
       await axiosService
