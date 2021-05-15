@@ -55,7 +55,7 @@ span {
   height: 100vh;
 
   display: grid;
-  grid-template-columns: minmax(20%, min-content) minmax(min-content, 1fr);
+  grid-template-columns: minmax(30%, min-content) minmax(min-content, 1fr);
   grid-template-rows:
     minmax(min-content, max-content) minmax(min-content, min-content)
     1fr;
@@ -166,12 +166,21 @@ span {
           </button>
           <button
             type="button"
-            class="btn btn-info btn-lg"
+            class="btn btn-danger btn-lg"
             style="margin-left: 0.5rem; color: #fff"
             @click="saveArticleModalClick()"
             :disabled="$v.articleData.article.$invalid"
           >
             SAVE ARTICLE
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger btn-lg"
+            style="margin-left: 0.5rem; color: #fff"
+            @click="newArticleModalClick()"
+            :disabled="$v.articleData.article.$invalid"
+          >
+            NEW ARTICLE
           </button>
         </div>
         <div class="reader-editor">
@@ -318,7 +327,7 @@ span {
             <div style="margin: 2rem">
               <div class="modal-header">
                 <h5 class="modal-title" id="modal-title-article">
-                  Save Article
+                  {{ articleModalTitleName }}
                 </h5>
                 <button
                   type="button"
@@ -429,6 +438,7 @@ export default {
         article: "",
       },
       articles: [],
+      articleModalTitleName: "",
     };
   },
   validations: {
@@ -602,12 +612,20 @@ export default {
         .catch((e) => console.log(e));
     },
     saveArticleModalClick: function () {
+      this.articleModalTitleName = "Save Article";
       this.saveArticleModalDisplay = !this.saveArticleModalDisplay;
       if (this.saveArticleModalDisplay) {
         this.saveArticleModalDisplayValue = "block";
       } else {
         this.saveArticleModalDisplayValue = "none";
       }
+    },
+    newArticleModalClick: function () {
+      delete this.articleData._id;
+      this.articleData.title = "";
+      this.articleData.description = "";
+      this.saveArticleModalClick();
+      this.articleModalTitleName = "New Article";
     },
   },
   created() {
