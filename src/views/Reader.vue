@@ -44,267 +44,349 @@ span {
   margin: 1rem;
   padding: 0.5rem;
 }
+
+.reader-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.reader-component {
+  width: 100vw;
+  height: 100vh;
+
+  display: grid;
+  grid-template-columns: minmax(20%, min-content) minmax(min-content, 1fr);
+  grid-template-rows:
+    minmax(min-content, max-content) minmax(min-content, min-content)
+    1fr;
+}
+.reader-editor {
+  padding: 0.8rem;
+  grid-row: 1 / span 1;
+  grid-column: 1 / span 1;
+
+  display: grid;
+  grid-template-columns:
+    minmax(min-content, max-content) minmax(min-content, max-content)
+    minmax(min-content, max-content);
+  grid-template-rows: 1fr;
+  grid-gap: 0.5rem;
+  justify-items: center;
+  align-items: center;
+  justify-self: center;
+  align-self: center;
+}
+.reader-editor-label {
+  grid-column: 1 / span 1;
+  grid-row: 1 / -1;
+  width: 100%;
+}
+.reader-editor-combobox {
+  grid-column: 2 / span 1;
+  grid-row: 1 / -1;
+  /* width: 100%; */
+}
+.reader-editor-button {
+  grid-column: 3 / span 1;
+  grid-row: 1 / -1;
+}
+.reader-article {
+  padding: 0.8rem;
+  grid-row: 1 / -1;
+  grid-column: 2 / span 1;
+}
+.reader-list {
+  overflow: scroll;
+  padding: 0.8rem;
+  grid-row: 2 / span 2;
+  grid-column: 1 / span 1;
+}
+@media only screen and (max-width: 1000px) {
+  .reader-list {
+    overflow: visible;
+    grid-column: 1 / -1;
+    grid-row: 3 / span 1;
+  }
+  .reader-article {
+    grid-column: 1 / -1;
+    grid-row: 1 / span 1;
+  }
+  .reader-editor {
+    grid-column: 1 / -1;
+    grid-row: 2 / span 1;
+  }
+}
 </style>
 
 <template>
-  <div class="container" style="margin-top: 75px">
-    <div class="mainView" @mouseup="selectWord">
-      <div class="row">
-        <div class="col-sm-3">
-          <label>Choose Pack</label>
-        </div>
-        <app-combobox
-          classValue="col-sm-6"
-          :mainData="packComboboxData"
-          @comboboxChange="selectedPack = $event"
-          :currentValue="comboboxCurrentValue"
-        />
-
-        <div class="col-sm-3">
+  <div>
+    <div class="reader-main">
+      <div class="reader-component">
+        <div class="reader-article">
+          <div class="form-group">
+            <textarea
+              v-if="openTextArea"
+              v-model="articleData.article"
+              @input="$v.articleData.article.$touch()"
+              @mouseup="selectWord"
+              :class="{
+                'form-control': true,
+                'is-invalid': $v.articleData.article.$error,
+              }"
+              id="exampleFormControlTextarea1"
+              rows="15"
+              style="margin-top: 0.5rem"
+              placeholder="Copy the text you want to read here..."
+            ></textarea>
+            <small class="text-danger" v-if="!$v.articleData.article.required"
+              >Article is required !</small
+            >
+            <p
+              class="articleBoard col-xs-12"
+              v-html="readArticle"
+              v-if="!openTextArea"
+            ></p>
+          </div>
+          <button
+            @click="readButtonClick"
+            class="btn btn-success btn-lg"
+            :disabled="
+              !$v.selectedPack.required || !$v.articleData.article.required
+            "
+          >
+            READ
+          </button>
+          <button
+            @click="clickNewArticleButton"
+            class="btn btn-primary btn-lg"
+            style="margin-left: 0.5rem"
+          >
+            CHANGE ARTICLE
+          </button>
           <button
             type="button"
-            class="btn btn-primary float-right"
-            @click="addWordModalClick()"
+            class="btn btn-info btn-lg"
+            style="margin-left: 0.5rem; color: #fff"
+            @click="saveArticleModalClick()"
+            :disabled="$v.articleData.article.$invalid"
           >
-            Add Word
+            SAVE ARTICLE
           </button>
         </div>
-      </div>
+        <div class="reader-editor">
+          <div class="reader-editor-label">
+            <label>Choose Pack</label>
+          </div>
+          <app-combobox
+            classValue="reader-editor-combobox"
+            :mainData="packComboboxData"
+            @comboboxChange="selectedPack = $event"
+            :currentValue="comboboxCurrentValue"
+          />
 
-      <div class="reader">
-        <div class="form-group">
-          <textarea
-            v-if="openTextArea"
-            v-model="articleData.article"
-            @input="$v.articleData.article.$touch()"
-            :class="{
-              'form-control': true,
-              'is-invalid': $v.articleData.article.$error,
-            }"
-            id="exampleFormControlTextarea1"
-            rows="15"
-            style="margin-top: 0.5rem"
-          ></textarea>
-          <small class="text-danger" v-if="!$v.articleData.article.required"
-            >Article is required !</small
-          >
+          <div class="reader-editor-button">
+            <button
+              type="button"
+              class="btn btn-primary float-right"
+              @click="addWordModalClick()"
+            >
+              Add Word
+            </button>
+          </div>
         </div>
-        <button
-          @click="readButtonClick"
-          class="btn btn-success btn-lg"
-          :disabled="
-            !$v.selectedPack.required || !$v.articleData.article.required
-          "
-        >
-          READ
-        </button>
-        <button
-          @click="clickNewArticleButton"
-          class="btn btn-primary btn-lg"
-          style="margin-left: 0.5rem"
-        >
-          CHANGE ARTICLE
-        </button>
-        <button
-          type="button"
-          class="btn btn-info btn-lg"
-          style="margin-left: 0.5rem; color: #fff"
-          @click="saveArticleModalClick()"
-          :disabled="$v.articleData.article.$invalid"
-        >
-          SAVE ARTICLE
-        </button>
-        <p
-          class="articleBoard col-xs-12"
-          v-html="readArticle"
-          v-if="!openTextArea"
-        ></p>
+        <div class="reader-list">
+          <article-list
+            :listData="articles"
+            @selectClick="
+              selectButtonClick(
+                $event.id,
+                $event.title,
+                $event.description,
+                $event.article
+              )
+            "
+            @deleteClick="deleteButtonClickInArticleList($event)"
+          ></article-list>
+        </div>
       </div>
     </div>
 
-    <!-- Modal -->
-    <div
-      class="modal fade bd-example-modal-sm"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="mySmallModalLabel"
-      aria-hidden="true"
-      v-bind:class="{
-        show: addWordModalDisplay,
-      }"
-      v-bind:style="{
-        display: addWordModalDisplayValue,
-      }"
-    >
-      <div class="modal-dialog" id="addWordModal">
-        <div class="modal-content">
-          <div style="margin: 2rem">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">Save Word</h5>
-              <button
-                type="button"
-                @click="addWordModalClick()"
-                style="
-                  border: 0;
-                  padding: 3px;
-                  background-color: #fff;
-                  cursor: pointer;
-                "
-              >
-                <span>X</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <app-input
-                @input="$v.wordData.mainWord.$touch()"
-                :inputClass="{
-                  'form-control': true,
-                  'is-invalid': $v.wordData.mainWord.$error,
-                }"
-                inputId="mainWord"
-                label="Main Word"
-                divClass="col-md-12 col-xs-12"
-                v-model="wordData.mainWord"
-                :dataValue="wordData.mainWord"
-                :attention1="$v.wordData.mainWord.required"
-                attention1Text="Main word is required !"
-              ></app-input>
-              <app-input
-                @input="$v.wordData.secondaryWord.$touch()"
-                :inputClass="{
-                  'form-control': true,
-                  'is-invalid': $v.wordData.secondaryWord.$error,
-                }"
-                inputId="secondaryWord"
-                label="Secondary Word"
-                divClass="col-md-12 col-xs-12"
-                v-model="wordData.secondaryWord"
-                :dataValue="wordData.secondaryWord"
-                :attention1="$v.wordData.secondaryWord.required"
-                attention1Text="Secondary word is required !"
-              ></app-input>
-            </div>
-            <div class="modal-footer">
-              <button
-                class="btn btn-success center"
-                @click="insertOrUpdateWord()"
-                :disabled="$v.wordData.$invalid"
-              >
-                <i class="far fa-save" style="margin-right: 3px"></i> SAVE
-              </button>
-              <button
-                class="btn btn-danger center"
-                @click="addWordModalClick()"
-              >
-                <i class="far fa-window-close" style="margin-right: 3px"></i>
-                Close
-              </button>
+    <div class="container" style="margin-top: 75px">
+      <!-- Modal -->
+      <div
+        class="modal fade bd-example-modal-sm"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="mySmallModalLabel"
+        aria-hidden="true"
+        v-bind:class="{
+          show: addWordModalDisplay,
+        }"
+        v-bind:style="{
+          display: addWordModalDisplayValue,
+        }"
+      >
+        <div class="modal-dialog" id="addWordModal">
+          <div class="modal-content">
+            <div style="margin: 2rem">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                  Save Word
+                </h5>
+                <button
+                  type="button"
+                  @click="addWordModalClick()"
+                  style="
+                    border: 0;
+                    padding: 3px;
+                    background-color: #fff;
+                    cursor: pointer;
+                  "
+                >
+                  <span>X</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <app-input
+                  @input="$v.wordData.mainWord.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.wordData.mainWord.$error,
+                  }"
+                  inputId="mainWord"
+                  label="Main Word"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="wordData.mainWord"
+                  :dataValue="wordData.mainWord"
+                  :attention1="$v.wordData.mainWord.required"
+                  attention1Text="Main word is required !"
+                ></app-input>
+                <app-input
+                  @input="$v.wordData.secondaryWord.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.wordData.secondaryWord.$error,
+                  }"
+                  inputId="secondaryWord"
+                  label="Secondary Word"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="wordData.secondaryWord"
+                  :dataValue="wordData.secondaryWord"
+                  :attention1="$v.wordData.secondaryWord.required"
+                  attention1Text="Secondary word is required !"
+                ></app-input>
+              </div>
+              <div class="modal-footer">
+                <button
+                  class="btn btn-success center"
+                  @click="insertOrUpdateWord()"
+                  :disabled="$v.wordData.$invalid"
+                >
+                  <i class="far fa-save" style="margin-right: 3px"></i> SAVE
+                </button>
+                <button
+                  class="btn btn-danger center"
+                  @click="addWordModalClick()"
+                >
+                  <i class="far fa-window-close" style="margin-right: 3px"></i>
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Modal End -->
+      <!-- Modal End -->
 
-    <!-- Modal For Article -->
-    <div
-      class="modal fade bd-example-modal-sm"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="mySmallModalLabel"
-      aria-hidden="true"
-      v-bind:class="{
-        show: saveArticleModalDisplay,
-      }"
-      v-bind:style="{
-        display: saveArticleModalDisplayValue,
-      }"
-    >
-      <div class="modal-dialog" id="saveAricleModal">
-        <div class="modal-content">
-          <div style="margin: 2rem">
-            <div class="modal-header">
-              <h5 class="modal-title" id="modal-title-article">Save Article</h5>
-              <button
-                type="button"
-                @click="saveArticleModalClick()"
-                style="
-                  border: 0;
-                  padding: 3px;
-                  background-color: #fff;
-                  cursor: pointer;
-                "
-              >
-                <span>X</span>
-              </button>
-            </div>
-            <div class="modal-body">
-              <app-input
-                @input="$v.articleData.title.$touch()"
-                :inputClass="{
-                  'form-control': true,
-                  'is-invalid': $v.articleData.title.$error,
-                }"
-                inputId="articleTitle"
-                label="Article Title"
-                divClass="col-md-12 col-xs-12"
-                v-model="articleData.title"
-                :dataValue="articleData.title"
-                :attention1="$v.articleData.title.required"
-                attention1Text="Title is required !"
-              ></app-input>
-              <app-input
-                @input="$v.articleData.description.$touch()"
-                :inputClass="{
-                  'form-control': true,
-                  'is-invalid': $v.articleData.description.$error,
-                }"
-                inputId="articleDescription"
-                label="Article Description"
-                divClass="col-md-12 col-xs-12"
-                v-model="articleData.description"
-                :dataValue="articleData.description"
-                :attention1="$v.articleData.description.required"
-                attention1Text="Description is required !"
-              ></app-input>
-            </div>
-            <div class="modal-footer">
-              <button
-                @click="saveArticle"
-                class="btn btn-warning"
-                style="margin-left: 0.5rem"
-                :disabled="$v.articleData.$invalid"
-              >
-                <i class="far fa-save" style="margin-right: 3px"></i> SAVE
-              </button>
-              <button
-                class="btn btn-danger center"
-                @click="saveArticleModalClick()"
-              >
-                <i class="far fa-window-close" style="margin-right: 3px"></i>
-                Close
-              </button>
+      <!-- Modal For Article -->
+      <div
+        class="modal fade bd-example-modal-sm"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="mySmallModalLabel"
+        aria-hidden="true"
+        v-bind:class="{
+          show: saveArticleModalDisplay,
+        }"
+        v-bind:style="{
+          display: saveArticleModalDisplayValue,
+        }"
+      >
+        <div class="modal-dialog" id="saveAricleModal">
+          <div class="modal-content">
+            <div style="margin: 2rem">
+              <div class="modal-header">
+                <h5 class="modal-title" id="modal-title-article">
+                  Save Article
+                </h5>
+                <button
+                  type="button"
+                  @click="saveArticleModalClick()"
+                  style="
+                    border: 0;
+                    padding: 3px;
+                    background-color: #fff;
+                    cursor: pointer;
+                  "
+                >
+                  <span>X</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <app-input
+                  @input="$v.articleData.title.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.articleData.title.$error,
+                  }"
+                  inputId="articleTitle"
+                  label="Article Title"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="articleData.title"
+                  :dataValue="articleData.title"
+                  :attention1="$v.articleData.title.required"
+                  attention1Text="Title is required !"
+                ></app-input>
+                <app-input
+                  @input="$v.articleData.description.$touch()"
+                  :inputClass="{
+                    'form-control': true,
+                    'is-invalid': $v.articleData.description.$error,
+                  }"
+                  inputId="articleDescription"
+                  label="Article Description"
+                  divClass="col-md-12 col-xs-12"
+                  v-model="articleData.description"
+                  :dataValue="articleData.description"
+                  :attention1="$v.articleData.description.required"
+                  attention1Text="Description is required !"
+                ></app-input>
+              </div>
+              <div class="modal-footer">
+                <button
+                  @click="saveArticle"
+                  class="btn btn-warning"
+                  style="margin-left: 0.5rem"
+                  :disabled="$v.articleData.$invalid"
+                >
+                  <i class="far fa-save" style="margin-right: 3px"></i> SAVE
+                </button>
+                <button
+                  class="btn btn-danger center"
+                  @click="saveArticleModalClick()"
+                >
+                  <i class="far fa-window-close" style="margin-right: 3px"></i>
+                  Close
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Modal For Article End -->
-    <p>{{ wordData }}</p>
+      <!-- Modal For Article End -->
 
-    <article-list
-      :listData="articles"
-      @selectClick="
-        selectButtonClick(
-          $event.id,
-          $event.title,
-          $event.description,
-          $event.article
-        )
-      "
-      @deleteClick="deleteButtonClickInArticleList($event)"
-    ></article-list>
-    <loading></loading>
+      <loading></loading>
+    </div>
   </div>
 </template>
 
