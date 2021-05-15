@@ -73,7 +73,7 @@ export default {
       data: [],
       columnsVisible: {
         title: { title: "Title", display: true },
-        description: { title: "Description", display: true },
+        description: { title: "Description", display: false },
         actions: { title: "Actions", display: true },
       },
       sortIcon: "arrow-up",
