@@ -24,7 +24,7 @@ a:hover {
 
   /* Position the tooltip */
   position: absolute;
-  z-index: 1;
+  z-index: 100;
   top: -40px;
   left: 110%;
 }
@@ -124,21 +124,23 @@ span {
       <div class="reader-component">
         <div class="reader-article">
           <div class="form-group">
-            <textarea
+            <div
+              contenteditable="true"
               ref="articleRef"
               v-if="openTextArea"
-              v-model="articleData.article"
-              @input="$v.articleData.article.$touch()"
+              @input="
+                feedArticleData($event);
+                $v.articleData.article.$touch();
+              "
               @mouseup="selectWord"
               :class="{
                 'form-control': true,
                 'is-invalid': $v.articleData.article.$error,
               }"
               id="exampleFormControlTextarea1"
-              rows="15"
-              style="margin-top: 0.5rem"
+              style="margin-top: 0.5rem; margin-bottom: 0.5rem"
               placeholder="Copy the text you want to read here..."
-            ></textarea>
+            ></div>
             <small class="text-danger" v-if="!$v.articleData.article.required"
               >Article is required !</small
             >
@@ -463,6 +465,9 @@ export default {
     loading: Loading,
   },
   methods: {
+    feedArticleData(e) {
+      this.articleData.article = e.target.innerHTML;
+    },
     async selectWord() {
       this.selectData = window.getSelection().toString();
       if (this.selectData == "") {
