@@ -50,6 +50,11 @@ export default {
       this.$store.dispatch("logout");
     },
   },
+  computed: {
+    userLoggedIn() {
+      return this.$store.state.userData.access_token != "";
+    },
+  },
 };
 </script>
 <template>
@@ -74,21 +79,21 @@ export default {
 
         <div class="collapse navbar-collapse" id="navbarsExample05">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item" v-if="this.$store.state.token == ''">
+            <li class="nav-item" v-if="!userLoggedIn">
               <router-link class="nav-link" to="/register"
                 >Register</router-link
               >
             </li>
-            <li class="nav-item" v-if="this.$store.state.token == ''">
+            <li class="nav-item" v-if="!userLoggedIn">
               <router-link class="nav-link" to="/login">Login</router-link>
             </li>
-            <li class="nav-item" v-if="this.$store.state.token != ''">
+            <li class="nav-item" v-if="userLoggedIn">
               <router-link class="nav-link" to="/reader">Reader</router-link>
             </li>
-            <li class="nav-item" v-if="this.$store.state.token != ''">
+            <li class="nav-item" v-if="userLoggedIn">
               <router-link class="nav-link" to="/pack">My Packs</router-link>
             </li>
-            <li class="nav-item" v-if="this.$store.state.token != ''">
+            <li class="nav-item" v-if="userLoggedIn">
               <router-link class="nav-link" to="/words">Words</router-link>
             </li>
             <!-- <li class="nav-item" v-if="this.$store.state.token != ''">
@@ -96,13 +101,13 @@ export default {
                 >PackWord</router-link
               >
             </li> -->
-            <li class="nav-item" v-if="this.$store.state.token != ''">
+            <li class="nav-item" v-if="userLoggedIn">
               <router-link class="nav-link" to="/sharedPacks"
                 >Shared Packs</router-link
               >
             </li>
           </ul>
-          <div v-if="this.$store.state.token != ''" class="nav-item dropdown">
+          <div v-if="userLoggedIn" class="nav-item dropdown">
             <a
               class="nav-link dropdown-toggle"
               href="#"
