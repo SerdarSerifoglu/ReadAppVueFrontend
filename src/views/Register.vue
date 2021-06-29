@@ -17,7 +17,7 @@
       />
 
       <div class="login-div">
-        <button @click="submit">REGISTER</button>
+        <button @click="register">REGISTER</button>
       </div>
     </div>
     <loading></loading>
@@ -45,18 +45,24 @@ export default {
     loading: Loading,
   },
   methods: {
+    register() {
+      this.$store.dispatch("register", { ...this.registerData }).then(() => {
+        this.$router.push({ name: "Reader" });
+      });
+      // commit("setToken", response.data.access_token);
+    },
     submit() {
       console.log(this.registerData.name);
       axiosNonTokenService
         .post("/auth/register", {
           ...this.registerData,
         })
-        .then(response => {
+        .then((response) => {
           console.log(response);
           basicAlertSwal("Created user");
           this.$router.push("/login");
         })
-        .catch(e => {
+        .catch((e) => {
           console.log(e);
           basicAlertSwal(
             e.response.status == 400

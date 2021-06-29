@@ -411,13 +411,13 @@ import Input from "../components/Input.vue";
 import ArticleList from "../components/ArticleList.vue";
 import { basicAlertSwal } from "../helpers/alertHelper.js";
 import Loading from "../components/Loading.vue";
-import store from "../store/index.js";
+// import store from "../store/index.js";
 
 export default {
   data() {
     return {
-      comboboxCurrentValue: store.getters.getUserSettings.selectedPackId,
-      userSettingColor: store.getters.getUserSettings.color ?? "FF2D00",
+      comboboxCurrentValue: "",
+      userSettingColor: this.$store.getters.getUserSettings.color ?? "FF2D00",
       addWordModalDisplayValue: "none",
       addWordModalDisplay: false,
       saveArticleModalDisplayValue: "none",
@@ -463,6 +463,11 @@ export default {
     "app-input": Input,
     "article-list": ArticleList,
     loading: Loading,
+  },
+  computed: {
+    comboboxCurrentValueComp() {
+      return this.$store.getters.getUserSettings.selectedPackId;
+    },
   },
   methods: {
     feedArticleData(e) {
@@ -521,11 +526,12 @@ export default {
         .catch((e) => console.log(e));
     },
     clickNewArticleButton() {
+      this.articleData.article = this.articleData.article + " ";
       this.clickedReadButton = false;
       this.openTextArea = true;
     },
     readToken() {
-      this.tokenNow = store.state.token;
+      this.tokenNow = this.$store.state.token;
     },
     insertOrUpdateWord: async function () {
       //işlem uygulanıcak data varsa update yoksa add
@@ -637,11 +643,11 @@ export default {
     axiosService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
     axiosService.defaults.headers.common[
       "Authorization"
-    ] = `Bearer: ${store.getters.getStateToken}`;
+    ] = `Bearer: ${this.$store.getters.getToken}`;
     axiosNonLoadingService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
     axiosNonLoadingService.defaults.headers.common[
       "Authorization"
-    ] = `Bearer: ${store.getters.getStateToken}`;
+    ] = `Bearer: ${this.$store.getters.getToken}`;
 
     axiosNonLoadingService
       .get("/pack/forCbx")
@@ -652,18 +658,43 @@ export default {
         e;
       });
 
-    this.comboboxCurrentValue = store.getters.getUserSettings.selectedPackId;
+    this.$store.commit("setUserSettings");
+    const dd = this.$store.getters.getUserSettings;
+    this.comboboxCurrentValue = this.$store.state.userSettings.selectedPackId;
+    console.log({ uuuuuu: this.$store.state.userSettings.selectedPackId });
+    console.log({ dd: dd });
+    console.log({ combobox: this.comboboxCurrentValue });
+    console.log({ selectedPack: this.selectedPack });
+
     if (this.selectedPack === "") {
       this.selectedPack = this.comboboxCurrentValue;
     }
+    console.log({ selectedPack2: this.selectedPack });
 
-    store.dispatch("setUserSettings");
     this.refreshArticleList();
   },
+  // beforeMount() {
+  //   // store.dispatch("setUserSettings");
+  //   const dd = this.$store.getters.getUserSettings;
+  //   this.comboboxCurrentValue = dd.selectedPackId;
+  //   console.log({ dd: dd });
+  //   console.log({ combobox: this.comboboxCurrentValue });
+  //   console.log({ selectedPack: this.selectedPack });
+
+  //   if (this.selectedPack === "") {
+  //     this.selectedPack = this.comboboxCurrentValue;
+  //   }
+  //   console.log({ selectedPack2: this.selectedPack });
+  // },
   watch: {
     articleData() {
       this.clickedReadButton = false;
       this.openTextArea = true;
+    },
+    "$store.state.userSettings.selectedPackId": function () {
+      console.log({ serdar: this.$store.state.userSettings.selectedPackId });
+      this.selectedPackId = this.$store.state.userSettings.selectedPackId;
+      this.comboboxCurrentValue = this.$store.state.userSettings.selectedPackId;
     },
   },
 };

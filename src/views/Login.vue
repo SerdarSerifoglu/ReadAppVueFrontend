@@ -85,8 +85,9 @@ input[type="password"]:focus {
       />
       <div class="forgotPass" @click="goForgotPassword">Forgot my password</div>
       <div class="login-div">
-        <button @click="submit">LOGIN</button>
+        <button @click="login">LOGIN</button>
       </div>
+      <p>{{ loginData.error }}</p>
     </div>
     <loading></loading>
   </div>
@@ -105,6 +106,7 @@ export default {
       loginData: {
         email: "",
         password: "",
+        error: null,
       },
       tokenNow: "",
     };
@@ -114,6 +116,19 @@ export default {
     loading: Loading,
   },
   methods: {
+    login() {
+      this.$store
+        .dispatch("login", {
+          email: this.loginData.email,
+          password: this.loginData.password,
+        })
+        .then(() => {
+          this.$router.push({ name: "Reader" });
+        })
+        .catch((err) => {
+          this.loginData.error = err.response.data.message;
+        });
+    },
     submit() {
       axiosNonTokenService
         .post("/auth/login", { ...this.loginData })

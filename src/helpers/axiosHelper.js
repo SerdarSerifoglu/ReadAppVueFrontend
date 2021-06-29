@@ -7,7 +7,7 @@ const axiosService = axios.create();
 axiosService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
 axiosService.defaults.headers.common[
   "Authorization"
-] = `Bearer: ${store.getters.getStateToken}`;
+] = `Bearer: ${store.getters.getToken}`;
 
 axiosService.interceptors.request.use(
   function(config) {

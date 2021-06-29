@@ -6,7 +6,7 @@ const axiosNonLoadingService = axios.create();
 axiosNonLoadingService.defaults.baseURL = process.env.VUE_APP_BASE_PATH;
 axiosNonLoadingService.defaults.headers.common[
   "Authorization"
-] = `Bearer: ${store.getters.getStateToken}`;
+] = `Bearer: ${store.getters.getToken}`;
 
 axiosNonLoadingService.interceptors.request.use(
   function(config) {
