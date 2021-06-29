@@ -40,42 +40,29 @@ const routes = [
     path: "/reader",
     name: "Reader",
     component: Reader,
-    //herhangi bir router'a girmeden önce yapacağı işlem
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
+    meta: { requiresAuth: true },
+    // //herhangi bir router'a girmeden önce yapacağı işlem
+    // async beforeEnter(to, from, next) {
+    //   if (store.getters.isAuthenticated) {
+    //     next();
+    //   } else {
+    //     await store.dispatch("initAuth");
+    //     next();
+    //   }
+    // },
   },
   {
     path: "/pack",
     name: "PackAdd",
     component: PackAdd,
     children: [{ path: "", component: PackAdd }],
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
+    meta: { requiresAuth: true },
   },
   {
     path: "/words",
     name: "Word",
     component: Word,
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
+    meta: { requiresAuth: true },
   },
   // {
   //   path: "/packword",
@@ -94,27 +81,13 @@ const routes = [
     path: "/sharedPacks",
     name: "SharedPacks",
     component: SharedPacks,
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
+    meta: { requiresAuth: true },
   },
   {
     path: "/userSettings",
     name: "UserSettings",
     component: UserSettings,
-    async beforeEnter(to, from, next) {
-      if (store.getters.isAuthenticated) {
-        next();
-      } else {
-        await store.dispatch("initAuth");
-        next();
-      }
-    },
+    meta: { requiresAuth: true },
   },
 ];
 
@@ -122,6 +95,15 @@ const router = new VueRouter({
   mode: "history",
   base: process.env.BASE_URL,
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem("user");
+  console.log({ to: to, from: from });
+  if (to.matched.some(record => record.meta.requiresAuth) && !loggedIn) {
+    next("/login");
+  }
+  next();
 });
 
 export default router;
